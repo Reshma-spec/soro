@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SARO — Smart Appliance Resource Optimization</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════
+   SARO — Smart Appliance Resource Optimization
+   style.css  —  Complete Stylesheet
+   ═══════════════════════════════════════════════════ */
+
+/* ── CSS CUSTOM PROPERTIES ── */
+:root {
+  --bg:      #06080f;
+  --bg2:     #0b0f1a;
+  --bg3:     #101526;
+  --card:    #0d1220;
+  --card2:   #131a2e;
+  --border:  rgba(99,179,237,0.13);
+  --border2: rgba(99,179,237,0.06);
+  --accent:  #4fc3f7;
+  --neon:    #00e5ff;
+  --green:   #00e676;
+  --yellow:  #ffca28;
+  --red:     #ff5252;
+  --orange:  #ff9800;
+  --purple:  #ce93d8;
+  --text:    #dce8f8;
+  --text2:   #7a9bbf;
+  --text3:   #3d5470;
+  --glow:    rgba(79,195,247,0.14);
+  --font:    'Outfit', sans-serif;
+  --mono:    'JetBrains Mono', monospace;
+  --radius:  12px;
+  --radius-sm: 8px;
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── GRID BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 100% 60% at 20% -10%, rgba(0,229,255,0.06)  0%, transparent 55%),
+    radial-gradient(ellipse 70%  50% at 85% 110%, rgba(0,230,118,0.04)  0%, transparent 55%),
+    repeating-linear-gradient(0deg,   transparent, transparent 60px, rgba(99,179,237,0.018) 60px, rgba(99,179,237,0.018) 61px),
+    repeating-linear-gradient(90deg,  transparent, transparent 60px, rgba(99,179,237,0.018) 60px, rgba(99,179,237,0.018) 61px);
+  pointer-events: none;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SCREENS (login / app) ── */
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ═══════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════ */
+#login-screen {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-wrap {
+  display: flex;
+  width: 900px;
+  max-width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgba(0,229,255,0.06), 0 40px 80px rgba(0,0,0,0.6);
+  animation: loginReveal 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes loginReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Left art panel */
+.login-art {
+  flex: 1;
+  background: linear-gradient(135deg, #060a14 0%, #0a1628 50%, #071220 100%);
+  padding: 52px 40px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.login-art::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 30% 110%, rgba(0,229,255,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60%  60% at 80% -20%, rgba(0,230,118,0.08) 0%, transparent 60%);
+}
+
+.circuit-bg { position: absolute; inset: 0; overflow: hidden; }
+.circuit-bg svg { width: 100%; height: 100%; opacity: 0.14; }
+
+.art-brand { position: relative; z-index: 1; }
+.brand-name {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  background: linear-gradient(135deg, #4fc3f7, #00e5ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.brand-name span {
+  background: linear-gradient(135deg, #00e676, #69f0ae);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.brand-tag { font-size: 13px; color: var(--text2); margin-top: 6px; letter-spacing: 0.5px; }
+
+.art-features { position: relative; z-index: 1; margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+.af-item { display: flex; align-items: flex-start; gap: 12px; }
+.af-icon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: rgba(79,195,247,0.1);
+  border: 1px solid rgba(79,195,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.af-text { font-size: 13px; color: var(--text2); line-height: 1.45; }
+.af-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* Right form panel */
+.login-form {
+  width: 360px;
+  flex-shrink: 0;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+}
+.lf-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.lf-sub   { font-size: 13px; color: var(--text2); margin-bottom: 28px; }
+
+/* Form elements */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  font-family: var(--mono);
+}
+.input-wrap { position: relative; }
+.inp-icon   { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; pointer-events: none; }
+.inp-suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text3); font-size: 14px; }
+.form-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 12px 40px 12px 40px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input:not(.input-wrap .form-input) { padding-left: 14px; }
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,195,247,0.12);
+}
+.form-input::placeholder { color: var(--text3); }
+
+.form-error {
+  display: none;
+  background: rgba(255,82,82,0.1);
+  border: 1px solid rgba(255,82,82,0.3);
+  color: var(--red);
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+.form-error.show { display: block; }
+
+/* Buttons */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #0288d1, #0097a7);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent); opacity: 0; transition: opacity 0.2s; }
+.btn-primary:hover::after { opacity: 1; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(2,136,209,0.4); }
+.btn-primary:active { transform: none; box-shadow: none; }
+
+.btn-outline {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--glow); border-color: var(--accent); }
+
+.btn-logout {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  background: rgba(255,82,82,0.08);
+  border: 1px solid rgba(255,82,82,0.22);
+  color: var(--red);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-logout:hover { background: rgba(255,82,82,0.15); }
+
+/* Demo box */
+.demo-box {
+  margin-top: 18px;
+  padding: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+}
+.demo-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-family: var(--mono); }
+.demo-row   { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+.demo-row span { color: var(--text2); }
+.demo-row code { color: var(--neon); font-family: var(--mono); }
+
+/* Or divider */
+.or-divider {
+  text-align: center;
+  color: var(--text3);
+  font-size: 12px;
+  margin: 16px 0;
+  position: relative;
+}
+.or-divider::before,
+.or-divider::after { content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: var(--border); }
+.or-divider::before { left: 0; }
+.or-divider::after  { right: 0; }
+
+/* ═══════════════════════════════
+   APP LAYOUT
+═══════════════════════════════ */
+#app-screen { flex-direction: row; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 256px;
+  min-height: 100vh;
+  background: rgba(8,11,20,0.96);
+  border-right: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  position: fixed; left: 0; top: 0; bottom: 0;
+  backdrop-filter: blur(16px);
+  z-index: 100;
+}
+
+.sb-brand { padding: 28px 22px 20px; border-bottom: 1px solid var(--border2); }
+.sb-brand-name {
+  font-size: 26px; font-weight: 900; letter-spacing: -1px;
+  background: linear-gradient(135deg, #4fc3f7, #00e5ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.sb-brand-name span {
+  background: linear-gradient(135deg, #00e676, #69f0ae);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.sb-brand-sub { font-size: 10px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; font-family: var(--mono); }
+
+.sb-user {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-avatar {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(79,195,247,0.3), rgba(0,229,255,0.2));
+  border: 1px solid rgba(79,195,247,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: var(--neon);
+}
+.sb-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+.sb-metre { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+.sb-nav { padding: 14px 12px; flex: 1; overflow-y: auto; }
+.nav-section { margin-bottom: 4px; }
+.nav-sec-label {
+  font-size: 9px; color: var(--text3); letter-spacing: 2px;
+  text-transform: uppercase; padding: 8px 10px 4px;
+  font-family: var(--mono);
+}
+.nav-btn {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 10px; border-radius: 10px;
+  cursor: pointer; transition: all 0.18s;
+  color: var(--text2); font-size: 13.5px; font-weight: 500;
+  margin-bottom: 2px; border: 1px solid transparent;
+  width: 100%; background: none; font-family: var(--font);
+  text-align: left;
+}
+.nav-btn:hover { background: var(--bg3); color: var(--text); }
+.nav-btn.active {
+  background: rgba(79,195,247,0.1);
+  color: var(--accent);
+  border-color: rgba(79,195,247,0.18);
+}
+.nav-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 8px; color: #fff;
+}
+.nav-badge.red   { background: var(--red); }
+.nav-badge.green { background: var(--green); color: #000; }
+
+.sb-footer { padding: 14px 16px; border-top: 1px solid var(--border2); }
+.sb-status  { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite; flex-shrink: 0;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* ── MAIN AREA ── */
+.main-area {
+  margin-left: 256px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 60px; display: flex; align-items: center;
+  padding: 0 28px; gap: 16px;
+  border-bottom: 1px solid var(--border2);
+  background: rgba(6,8,15,0.85); backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 50;
+}
+.tb-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.tb-clock { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
+.tb-alert-btn {
+  padding: 6px 14px;
+  background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3);
+  color: var(--red); border-radius: 6px; cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  transition: background 0.2s;
+}
+.tb-alert-btn:hover { background: rgba(255,82,82,0.2); }
+
+/* ── PAGES ── */
+.page { display: none; padding: 28px; animation: pageIn 0.3s ease both; }
+.page.active { display: block; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── SECTION HEADER ── */
+.sec-head  { margin-bottom: 22px; }
+.sec-title { font-size: 22px; font-weight: 800; color: var(--text); }
+.sec-desc  { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+/* ── KPI ROW ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.kpi-card {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 20px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.25s, transform 0.2s;
+}
+.kpi-card:hover { border-color: var(--border); transform: translateY(-2px); }
+.kpi-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--kc, var(--accent)), transparent);
+}
+.kpi-card.accent-g::after { --kc: var(--green); }
+.kpi-card.accent-y::after { --kc: var(--yellow); }
+.kpi-card.accent-r::after { --kc: var(--red); }
+.kpi-card.accent-p::after { --kc: var(--purple); }
+.kpi-icon {
+  position: absolute; right: 16px; top: 16px;
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--glow);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.green-icon  { background: rgba(0,230,118,0.1)  !important; }
+.yellow-icon { background: rgba(255,202,40,0.1)  !important; }
+.red-icon    { background: rgba(255,82,82,0.1)   !important; }
+.kpi-label {
+  font-size: 10px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 1.5px; font-family: var(--mono); margin-bottom: 10px;
+}
+.kpi-value { font-size: 30px; font-weight: 800; color: var(--text); line-height: 1; }
+.unit      { font-size: 13px; font-weight: 400; color: var(--text2); margin-left: 3px; }
+.kpi-delta { font-size: 11px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+.kpi-delta.up  { color: var(--red); }
+.kpi-delta.dn  { color: var(--green); }
+.kpi-delta.neu { color: var(--text3); }
+
+/* ── GRID LAYOUTS ── */
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr;         gap: 16px; margin-bottom: 20px; }
+.grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr;     gap: 16px; margin-bottom: 20px; }
+.grid-65  { display: grid; grid-template-columns: 1.6fr 1fr;       gap: 16px; margin-bottom: 20px; }
+.mb16     { margin-bottom: 16px; }
+.mb20     { margin-bottom: 20px; }
+
+/* ── PANEL ── */
+.panel { background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.panel-head {
+  padding: 16px 20px; border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.panel-sub   { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.panel-body  { padding: 20px; }
+
+/* ── LEGEND / TAGS ── */
+.legend-row { display: flex; gap: 12px; font-size: 12px; }
+.leg-blue   { color: var(--accent); }
+.leg-dim    { color: var(--text3); }
+.tag-green  { font-size: 12px; color: var(--green); }
+.ml-badge   { font-size: 12px; padding: 4px 12px; background: rgba(206,147,216,0.1); border: 1px solid rgba(206,147,216,0.2); border-radius: 6px; color: var(--purple); }
+
+/* ── DONUT LEGEND ── */
+.donut-legend  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.dl-item       { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+.dl-item strong { color: var(--text); }
+.dl-dot        { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.dl-dot.blue   { background: #4fc3f7; }
+.dl-dot.green  { background: #00e676; }
+.dl-dot.yellow { background: #ffca28; }
+.dl-dot.purple { background: #ce93d8; }
+
+/* ── APP CARDS ── */
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+.app-card {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 16px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+}
+.app-card:hover { border-color: var(--border); background: var(--card2); }
+.app-card.on   .app-dot { background: var(--green);  box-shadow: 0 0 8px var(--green); }
+.app-card.warn .app-dot { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+.app-card.off  .app-dot { background: var(--text3); }
+.app-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.app-dot  { width: 8px; height: 8px; border-radius: 50%; }
+.app-emoji { font-size: 26px; }
+.app-name       { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.app-status-txt { font-size: 11px; color: var(--text3); }
+.app-metrics    { display: flex; gap: 12px; margin-top: 10px; }
+.am     { flex: 1; }
+.am-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent); }
+.am-val small { font-size: 10px; }
+.am-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.eff-bar-wrap { margin-top: 10px; }
+.eff-row  { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.eff-track { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.eff-fill  { height: 100%; border-radius: 2px; transition: width 0.7s ease; }
+
+/* ── ALERTS ── */
+.alert-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 18px; border-left: 3px solid transparent;
+  transition: background 0.2s;
+}
+.alert-item + .alert-item { border-top: 1px solid var(--border2); }
+.alert-item:hover { background: var(--bg3); }
+.alert-item.crit { border-left-color: var(--red); }
+.alert-item.warn { border-left-color: var(--yellow); }
+.alert-item.info { border-left-color: var(--accent); }
+.alert-dot   { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.alert-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.alert-desc  { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.alert-time  { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 5px; }
+.alert-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.abtn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); border: 1px solid; transition: all 0.2s; }
+.abtn-r { background: rgba(255,82,82,0.1); border-color: rgba(255,82,82,0.3); color: var(--red); }
+.abtn-r:hover { background: rgba(255,82,82,0.2); }
+.abtn-n { background: var(--bg3); border-color: var(--border); color: var(--text2); }
+.abtn-n:hover { background: var(--card2); }
+
+/* ── DATA TABLE ── */
+.dtable { width: 100%; border-collapse: collapse; }
+.dtable th {
+  text-align: left; padding: 9px 14px;
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  letter-spacing: 1px; text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+}
+.dtable td { padding: 11px 14px; font-size: 13px; color: var(--text2); border-bottom: 1px solid var(--border2); }
+.dtable tr:last-child td { border-bottom: none; }
+.dtable tr:hover td { background: rgba(255,255,255,0.018); }
+.sub-text { color: var(--text3); font-size: 11px; }
+.mono { font-family: var(--mono); }
+
+/* ── PILLS ── */
+.pill   { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+.pill-g { background: rgba(0,230,118,0.12); color: var(--green); }
+.pill-r { background: rgba(255,82,82,0.12);  color: var(--red); }
+.pill-y { background: rgba(255,202,40,0.12); color: var(--yellow); }
+.pill-b { background: rgba(79,195,247,0.12); color: var(--accent); }
+
+/* ── TOGGLE SWITCH ── */
+.toggle { position: relative; width: 38px; height: 21px; display: inline-block; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.tslider {
+  position: absolute; inset: 0; background: var(--bg3);
+  border-radius: 11px; cursor: pointer; transition: 0.3s;
+  border: 1px solid var(--border);
+}
+.tslider::before {
+  content: ''; position: absolute;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--text3); top: 2px; left: 2px; transition: 0.3s;
+}
+input:checked + .tslider { background: rgba(79,195,247,0.2); border-color: var(--accent); }
+input:checked + .tslider::before { transform: translateX(17px); background: var(--accent); }
+
+/* ── TARIFF / SCORE BARS ── */
+.sbar      { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+.sbar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+.tariff-list  { display: flex; flex-direction: column; }
+.tariff-row   { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.tariff-label { color: var(--text2); }
+.tariff-rate  { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.insight-box  { margin-top: 18px; padding: 14px; border-radius: 10px; }
+.green-border { background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.18); }
+.insight-title { font-size: 12px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+.insight-text  { font-size: 12px; color: var(--text2); }
+.stat-bar-item   { margin-bottom: 14px; }
+.stat-bar-top    { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: var(--text2); }
+
+/* ── WATER ── */
+.water-breakdown { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.wb-row  { display: flex; justify-content: space-between; font-size: 13px; }
+.wb-label { display: flex; align-items: center; gap: 8px; }
+
+/* ── FORECAST BOXES ── */
+.pred-week { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; padding: 16px; }
+.pred-d    { background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 10px 6px; text-align: center; transition: 0.2s; }
+.pred-d:hover { border-color: var(--border); }
+.pred-dname  { font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; }
+.pred-dval   { font-size: 15px; font-weight: 800; margin: 6px 0 2px; }
+.pred-dunit  { font-size: 9px; color: var(--text3); margin-bottom: 6px; }
+.pred-bar    { height: 3px; border-radius: 2px; background: var(--bg2); overflow: hidden; }
+.pred-bar-fill { height: 100%; border-radius: 2px; }
+
+/* ── BILL UPLOAD ── */
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  padding: 40px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--bg3);
+  position: relative; overflow: hidden;
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(79,195,247,0.05); }
+.upload-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 0; }
+.upload-icon  { font-size: 40px; margin-bottom: 12px; }
+.upload-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.upload-sub   { font-size: 13px; color: var(--text2); }
+.bills-list   { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.bill-item {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 13px 16px;
+  display: flex; align-items: center; gap: 14px; transition: border-color 0.2s;
+}
+.bill-item:hover { border-color: var(--border); }
+.bill-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,202,40,0.12); border: 1px solid rgba(255,202,40,0.22);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.bill-name   { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.bill-meta   { font-size: 11px; color: var(--text3); }
+.bill-amount { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--yellow); }
+.bill-actions { display: flex; gap: 8px; align-items: center; }
+.bill-analyse-btn {
+  padding: 5px 12px; background: rgba(79,195,247,0.1);
+  border: 1px solid rgba(79,195,247,0.22); color: var(--accent);
+  font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer;
+  font-family: var(--font); transition: 0.2s;
+}
+.bill-analyse-btn:hover { background: rgba(79,195,247,0.2); }
+.bill-del {
+  background: none; border: none; color: var(--text3);
+  cursor: pointer; font-size: 17px; padding: 4px 8px;
+  transition: 0.2s; border-radius: 4px; line-height: 1;
+}
+.bill-del:hover { color: var(--red); background: rgba(255,82,82,0.1); }
+
+/* ── RECOMMENDATIONS ── */
+.rec-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 18px; border-bottom: 1px solid var(--border2);
+  transition: background 0.2s; cursor: pointer;
+}
+.rec-item:last-child { border-bottom: none; }
+.rec-item:hover { background: var(--bg3); }
+.rec-item.done { opacity: 0.45; }
+.rec-num {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(79,195,247,0.1); border: 1px solid rgba(79,195,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 700;
+}
+.rec-content { flex: 1; }
+.rec-title   { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.rec-desc    { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.rec-tags    { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.rtag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-family: var(--mono); }
+.rtag-e { background: rgba(79,195,247,0.1);  color: var(--accent); }
+.rtag-w { background: rgba(0,230,118,0.1);   color: var(--green); }
+.rtag-c { background: rgba(255,202,40,0.1);  color: var(--yellow); }
+.rec-save     { margin-left: auto; text-align: right; flex-shrink: 0; }
+.rec-save-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--green); }
+.rec-save-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* ── LOGIN HISTORY ── */
+.hlog-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 18px; border-bottom: 1px solid var(--border2);
+}
+.hlog-item:last-child { border-bottom: none; }
+.hlog-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.hlog-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.hlog-sub  { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.hlog-time { font-family: var(--mono); font-size: 10px; color: var(--text3); white-space: nowrap; }
+.stat-duo        { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.stat-duo-item   { text-align: center; }
+.stat-duo-label  { font-size: 11px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; margin-bottom: 6px; }
+.stat-duo-val    { font-family: var(--mono); font-size: 36px; font-weight: 700; }
+
+/* ── ENERGY SCORE ── */
+.score-center { display: flex; flex-direction: column; align-items: center; padding: 24px; }
+.score-ring {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: conic-gradient(var(--green) 0deg 281deg, var(--bg2) 281deg 360deg);
+  display: flex; align-items: center; justify-content: center;
+}
+.score-inner {
+  width: 110px; height: 110px; border-radius: 50%;
+  background: var(--card);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+}
+.score-val   { font-size: 28px; font-weight: 900; color: var(--green); }
+.score-sub   { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+.score-grade { margin-top: 12px; font-size: 18px; font-weight: 800; }
+.score-desc  { font-size: 12px; color: var(--text2); margin-top: 4px; text-align: center; }
+.how-grid    { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border2); }
+.how-item    { padding: 20px; background: var(--card); }
+.how-emoji   { font-size: 20px; margin-bottom: 10px; }
+.how-title   { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.how-desc    { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.how-pts     { margin-top: 10px; font-size: 12px; font-weight: 700; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(3,6,14,0.86); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; width: 480px; max-width: 95vw;
+  overflow: hidden; animation: loginReveal 0.3s ease both;
+}
+.modal-head {
+  padding: 22px 26px; border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-size: 18px; font-weight: 700; }
+.modal-close { background: none; border: none; color: var(--text2); font-size: 22px; cursor: pointer; line-height: 1; padding: 4px; }
+.modal-body  { padding: 26px; }
+.modal-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ── DEVICE STAT ROWS ── */
+.dstat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border2); }
+.dstat-row:last-child { border-bottom: none; }
+.dstat-k { font-size: 13px; color: var(--text2); }
+.dstat-v { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 13px 18px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  display: flex; align-items: center; gap: 12px;
+  max-width: 320px; font-size: 13px;
+  animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  transform-origin: bottom right;
+}
+.toast.hide { animation: toastOut 0.2s ease forwards; }
+@keyframes toastIn  { from { opacity:0; transform: scale(0.9) translateY(10px); } to { opacity:1; transform: none; } }
+@keyframes toastOut { to   { opacity:0; transform: scale(0.9) translateY(10px); } }
+
+/* ── COLOUR UTILITY CLASSES ── */
+.accent-txt { color: var(--accent); }
+.green-txt  { color: var(--green); }
+.yellow-txt { color: var(--yellow); }
+.red-txt    { color: var(--red); }
+.purple-txt { color: var(--purple); }
+.dim-txt    { color: var(--text3); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  .grid-65, .grid-3 { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .login-art { display: none; }
+  .login-form { width: 100%; }
+  .sidebar { width: 200px; }
+  .main-area { margin-left: 200px; }
+  .modal-grid { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SCREEN 1 — LOGIN
+═══════════════════════════════════════════════ -->
+<div class="screen active" id="login-screen">
+  <div class="login-wrap">
+
+    <!-- Left art panel -->
+    <div class="login-art">
+      <div class="circuit-bg">
+        <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="200" cy="250" r="190" stroke="#4fc3f7" stroke-width=".5" stroke-dasharray="4 10"/>
+          <circle cx="200" cy="250" r="130" stroke="#00e676" stroke-width=".5" stroke-dasharray="2 7"/>
+          <circle cx="200" cy="250" r="70"  stroke="#4fc3f7" stroke-width=".5"/>
+          <line x1="0" y1="250" x2="400" y2="250" stroke="#4fc3f7" stroke-width=".4" stroke-dasharray="10 18"/>
+          <line x1="200" y1="0"   x2="200" y2="500" stroke="#4fc3f7" stroke-width=".4" stroke-dasharray="10 18"/>
+          <circle cx="200" cy="250" r="7" fill="#00e5ff" opacity=".7"/>
+          <circle cx="390" cy="250" r="4" fill="#4fc3f7" opacity=".5"/>
+          <circle cx="200" cy="440" r="4" fill="#00e676" opacity=".5"/>
+          <circle cx="70"  cy="110" r="3" fill="#4fc3f7" opacity=".3"/>
+          <rect x="145" y="195" width="110" height="110" rx="8" stroke="#4fc3f7" stroke-width=".4" opacity=".3"/>
+        </svg>
+      </div>
+      <div class="art-brand">
+        <div class="brand-name">SA<span>R</span>O</div>
+        <div class="brand-tag">Smart Appliance Resource Optimization</div>
+      </div>
+      <div class="art-features">
+        <div class="af-item"><div class="af-icon">⚡</div><div class="af-text"><strong>AI Energy Analytics</strong>ML-powered consumption analysis &amp; anomaly detection</div></div>
+        <div class="af-item"><div class="af-icon">💧</div><div class="af-text"><strong>Water Monitoring</strong>Track and optimize water usage across appliances</div></div>
+        <div class="af-item"><div class="af-icon">📄</div><div class="af-text"><strong>Bill Intelligence</strong>Upload monthly bills — get instant savings insights</div></div>
+        <div class="af-item"><div class="af-icon">🔔</div><div class="af-text"><strong>Smart Alerts</strong>Early warnings before overload or damage occurs</div></div>
+        <div class="af-item"><div class="af-icon">📊</div><div class="af-text"><strong>Predictive Forecasts</strong>7–30 day consumption forecasts with confidence bands</div></div>
+      </div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="login-form">
+      <h2 class="lf-title">Welcome Back</h2>
+      <p class="lf-sub">Sign in to your SARO account</p>
+      <div class="form-error" id="loginError"></div>
+      <div class="form-group">
+        <label class="form-label">Metre Number</label>
+        <div class="input-wrap">
+          <span class="inp-icon">⚡</span>
+          <input id="loginMetre" class="form-input" placeholder="e.g. MTR-2024-001" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <span class="inp-icon">🔒</span>
+          <input id="loginPassword" class="form-input" type="password" placeholder="Enter your password"/>
+          <span class="inp-suffix" onclick="togglePw('loginPassword',this)">👁</span>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="Auth.login()">Sign In →</button>
+      <div class="demo-box">
+        <div class="demo-label">Demo Credentials</div>
+        <div class="demo-row"><span>Metre:</span><code>MTR-2024-001</code></div>
+        <div class="demo-row"><span>Password:</span><code>admin123</code></div>
+        <div class="demo-row" style="margin-top:6px"><span>Metre:</span><code>MTR-2024-002</code></div>
+        <div class="demo-row"><span>Password:</span><code>user456</code></div>
+      </div>
+      <div class="or-divider">or</div>
+      <button class="btn-outline" onclick="Modal.openRegister()">Create New Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SCREEN 2 — MAIN APP
+═══════════════════════════════════════════════ -->
+<div class="screen" id="app-screen">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-name">SA<span>R</span>O</div>
+      <div class="sb-brand-sub">Resource Optimizer v2.0</div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-avatar" id="sbAvatar">A</div>
+      <div>
+        <div class="sb-name"  id="sbName">User</div>
+        <div class="sb-metre" id="sbMetre">MTR-XXXX</div>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nav-section">
+        <div class="nav-sec-label">Overview</div>
+        <button class="nav-btn active" data-page="dashboard"      onclick="UI.navigate('dashboard',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
+        </button>
+        <button class="nav-btn" data-page="appliances" onclick="UI.navigate('appliances',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Appliances
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-sec-label">Analytics</div>
+        <button class="nav-btn" data-page="energy" onclick="UI.navigate('energy',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Energy Monitor
+        </button>
+        <button class="nav-btn" data-page="water" onclick="UI.navigate('water',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.333 8 12 8 12s8-6.667 8-12a8 8 0 0 0-8-8z"/></svg>Water Usage
+        </button>
+        <button class="nav-btn" data-page="predictions" onclick="UI.navigate('predictions',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>AI Predictions
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-sec-label">Bills &amp; Savings</div>
+        <button class="nav-btn" data-page="bills" onclick="UI.navigate('bills',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Bill Upload
+          <span class="nav-badge green" id="billBadge">0</span>
+        </button>
+        <button class="nav-btn" data-page="recommendations" onclick="UI.navigate('recommendations',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>AI Recommendations
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-sec-label">System</div>
+        <button class="nav-btn" data-page="alerts" onclick="UI.navigate('alerts',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Alert Center
+          <span class="nav-badge red" id="alertBadge">3</span>
+        </button>
+        <button class="nav-btn" data-page="history" onclick="UI.navigate('history',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Login History
+        </button>
+        <button class="nav-btn" data-page="score" onclick="UI.navigate('score',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Energy Score
+        </button>
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-status"><span class="status-dot"></span>All sensors live · v2.0</div>
+      <button class="btn-logout" onclick="Auth.logout()">⬅ Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- ── MAIN AREA ── -->
+  <div class="main-area">
+    <header class="topbar">
+      <div class="tb-title" id="tb-title">Dashboard Overview</div>
+      <div class="tb-clock"  id="clock"></div>
+      <button class="tb-alert-btn" onclick="UI.navigate('alerts',document.querySelector('[data-page=alerts]'))">⚠ 3 Alerts</button>
+    </header>
+
+    <!-- PAGE: DASHBOARD -->
+    <section class="page active" id="page-dashboard">
+      <div class="sec-head">
+        <h1 class="sec-title">Resource Overview</h1>
+        <p class="sec-desc" id="dash-welcome">Real-time monitoring across all household appliances</p>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-icon">⚡</div><div class="kpi-label">Total Energy Today</div><div class="kpi-value">18.4<span class="unit">kWh</span></div><div class="kpi-delta up">▲ 6.2% vs yesterday</div></div>
+        <div class="kpi-card accent-g"><div class="kpi-icon green-icon">💧</div><div class="kpi-label">Water Used Today</div><div class="kpi-value">142<span class="unit">L</span></div><div class="kpi-delta dn">▼ 8.3% vs yesterday</div></div>
+        <div class="kpi-card accent-y"><div class="kpi-icon yellow-icon">₹</div><div class="kpi-label">Est. Monthly Cost</div><div class="kpi-value">₹2,840</div><div class="kpi-delta dn">▼ 3.1% vs last month</div></div>
+        <div class="kpi-card accent-r"><div class="kpi-icon red-icon">🔔</div><div class="kpi-label">Active Alerts</div><div class="kpi-value">3<span class="unit">issues</span></div><div class="kpi-delta neu">1 critical · 2 warnings</div></div>
+      </div>
+      <div class="grid-65">
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title">24-Hour Energy Consumption</div><div class="panel-sub">kWh per hour — all appliances combined</div></div><div class="legend-row"><span class="leg leg-blue">● Today</span><span class="leg leg-dim">● Yesterday</span></div></div>
+          <div class="panel-body"><canvas id="energyChart" height="200"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Appliance Energy Share</div></div>
+          <div class="panel-body"><canvas id="donutChart" height="180"></canvas>
+            <div class="donut-legend">
+              <div class="dl-item"><span class="dl-dot blue"></span>AC <strong>42%</strong></div>
+              <div class="dl-item"><span class="dl-dot green"></span>Fridge <strong>28%</strong></div>
+              <div class="dl-item"><span class="dl-dot yellow"></span>Washer <strong>18%</strong></div>
+              <div class="dl-item"><span class="dl-dot purple"></span>Cooler <strong>12%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title">Live Appliance Status</div></div><span class="tag-green">4 online</span></div>
+          <div class="app-grid">
+            <div class="app-card on" onclick="Devices.showModal('ac')">
+              <div class="app-top"><div class="app-emoji">❄️</div><div class="app-dot"></div></div>
+              <div class="app-name">Air Conditioner</div><div class="app-status-txt">Running · 24°C set</div>
+              <div class="app-metrics"><div class="am"><div class="am-val" id="acPow">1.82<small>kW</small></div><div class="am-lbl">Power</div></div><div class="am"><div class="am-val">87%</div><div class="am-lbl">Efficiency</div></div></div>
+              <div class="eff-bar-wrap"><div class="eff-row"><span>Efficiency</span><span class="eff-pct green-txt">87%</span></div><div class="eff-track"><div class="eff-fill" style="width:87%;background:linear-gradient(90deg,var(--accent),var(--green))"></div></div></div>
+            </div>
+            <div class="app-card on" onclick="Devices.showModal('fridge')">
+              <div class="app-top"><div class="app-emoji">🧊</div><div class="app-dot"></div></div>
+              <div class="app-name">Refrigerator</div><div class="app-status-txt">Optimal · 3°C</div>
+              <div class="app-metrics"><div class="am"><div class="am-val" id="frPow">0.14<small>kW</small></div><div class="am-lbl">Power</div></div><div class="am"><div class="am-val">94%</div><div class="am-lbl">Efficiency</div></div></div>
+              <div class="eff-bar-wrap"><div class="eff-row"><span>Efficiency</span><span class="eff-pct green-txt">94%</span></div><div class="eff-track"><div class="eff-fill" style="width:94%;background:var(--green)"></div></div></div>
+            </div>
+            <div class="app-card warn" onclick="Devices.showModal('washer')">
+              <div class="app-top"><div class="app-emoji">🫧</div><div class="app-dot"></div></div>
+              <div class="app-name">Washing Machine</div><div class="app-status-txt">⚠ Cycle overrun</div>
+              <div class="app-metrics"><div class="am"><div class="am-val yellow-txt" id="waPow">0.78<small>kW</small></div><div class="am-lbl">Power</div></div><div class="am"><div class="am-val yellow-txt">71%</div><div class="am-lbl">Efficiency</div></div></div>
+              <div class="eff-bar-wrap"><div class="eff-row"><span>Efficiency</span><span class="eff-pct yellow-txt">71%</span></div><div class="eff-track"><div class="eff-fill" style="width:71%;background:var(--yellow)"></div></div></div>
+            </div>
+            <div class="app-card on" onclick="Devices.showModal('cooler')">
+              <div class="app-top"><div class="app-emoji">💨</div><div class="app-dot"></div></div>
+              <div class="app-name">Air Cooler</div><div class="app-status-txt">Running · Speed 2</div>
+              <div class="app-metrics"><div class="am"><div class="am-val" id="coPow">0.21<small>kW</small></div><div class="am-lbl">Power</div></div><div class="am"><div class="am-val">89%</div><div class="am-lbl">Efficiency</div></div></div>
+              <div class="eff-bar-wrap"><div class="eff-row"><span>Efficiency</span><span class="eff-pct green-txt">89%</span></div><div class="eff-track"><div class="eff-fill" style="width:89%;background:linear-gradient(90deg,var(--accent),var(--green))"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Critical Alerts</div></div>
+          <div class="alert-item crit"><div class="alert-dot">🔴</div><div><div class="alert-title">Washing Machine Overload Risk</div><div class="alert-desc">Current draw 12% above rated. Possible drum bearing strain.</div><div class="alert-time">Today · 14:32</div></div></div>
+          <div class="alert-item warn"><div class="alert-dot">🟡</div><div><div class="alert-title">AC Peak Hours Usage</div><div class="alert-desc">Running during peak tariff 14:00–18:00. Schedule shift advised.</div><div class="alert-time">Today · 13:58</div></div></div>
+          <div class="alert-item warn"><div class="alert-dot">🟡</div><div><div class="alert-title">Refrigerator Door Seal</div><div class="alert-desc">Compressor cycles increased 18%. Inspect door seal.</div><div class="alert-time">Yesterday · 22:15</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: APPLIANCES -->
+    <section class="page" id="page-appliances">
+      <div class="sec-head"><h1 class="sec-title">Appliance Management</h1><p class="sec-desc">Control, monitor and configure each device</p></div>
+      <div class="panel mb20">
+        <div class="panel-head"><div class="panel-title">All Devices</div></div>
+        <table class="dtable">
+          <thead><tr><th>Device</th><th>Status</th><th>Power (kW)</th><th>Today (kWh)</th><th>Water (L)</th><th>Efficiency</th><th>Star Rating</th><th>Control</th></tr></thead>
+          <tbody>
+            <tr><td><strong>❄️ Air Conditioner</strong><br><small class="sub-text">Samsung 1.5T Inverter</small></td><td><span class="pill pill-g">ON</span></td><td class="mono accent-txt">1.82</td><td class="mono">7.73</td><td class="dim-txt">—</td><td><span class="pill pill-g">87%</span></td><td>⭐⭐⭐⭐⭐</td><td><label class="toggle"><input type="checkbox" checked onchange="Devices.toggle('AC',this)"><span class="tslider"></span></label></td></tr>
+            <tr><td><strong>🧊 Refrigerator</strong><br><small class="sub-text">LG 260L Double Door</small></td><td><span class="pill pill-g">ON</span></td><td class="mono accent-txt">0.14</td><td class="mono">3.36</td><td class="dim-txt">—</td><td><span class="pill pill-g">94%</span></td><td>⭐⭐⭐⭐</td><td><label class="toggle"><input type="checkbox" checked onchange="Devices.toggle('Fridge',this)"><span class="tslider"></span></label></td></tr>
+            <tr><td><strong>🫧 Washing Machine</strong><br><small class="sub-text">Whirlpool 7kg FWD</small></td><td><span class="pill pill-y">WARN</span></td><td class="mono yellow-txt">0.78</td><td class="mono">2.34</td><td class="mono accent-txt">82</td><td><span class="pill pill-y">71%</span></td><td>⭐⭐⭐⭐⭐</td><td><label class="toggle"><input type="checkbox" checked onchange="Devices.toggle('Washer',this)"><span class="tslider"></span></label></td></tr>
+            <tr><td><strong>💨 Air Cooler</strong><br><small class="sub-text">Symphony 65L Desert</small></td><td><span class="pill pill-g">ON</span></td><td class="mono accent-txt">0.21</td><td class="mono">0.84</td><td class="mono accent-txt">60</td><td><span class="pill pill-g">89%</span></td><td>⭐⭐⭐⭐⭐</td><td><label class="toggle"><input type="checkbox" checked onchange="Devices.toggle('Cooler',this)"><span class="tslider"></span></label></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div class="panel-title">Performance Degradation Forecast</div><div class="panel-sub">ML-estimated efficiency — next 12 months</div></div><div class="panel-body"><canvas id="degradChart" height="220"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Maintenance Schedule</div></div>
+          <div class="panel-body"><table class="dtable"><thead><tr><th>Device</th><th>Last Service</th><th>Next Due</th><th>Status</th></tr></thead><tbody>
+            <tr><td>❄️ AC</td><td>Nov 2024</td><td>May 2025</td><td><span class="pill pill-g">OK</span></td></tr>
+            <tr><td>🧊 Fridge</td><td>Aug 2024</td><td>Feb 2025</td><td><span class="pill pill-r">DUE</span></td></tr>
+            <tr><td>🫧 Washer</td><td>Dec 2024</td><td>Jun 2025</td><td><span class="pill pill-g">OK</span></td></tr>
+            <tr><td>💨 Cooler</td><td>Jan 2025</td><td>Jul 2025</td><td><span class="pill pill-g">OK</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: ENERGY -->
+    <section class="page" id="page-energy">
+      <div class="sec-head"><h1 class="sec-title">Energy Monitor</h1><p class="sec-desc">ML-powered consumption analysis with peak detection and baseline comparison</p></div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">This Month</div><div class="kpi-value">412<span class="unit">kWh</span></div><div class="kpi-delta dn">▼ 9% vs last month</div></div>
+        <div class="kpi-card accent-g"><div class="kpi-label">Peak Hour</div><div class="kpi-value" style="font-size:20px">14:00–16:00</div><div class="kpi-delta neu">Highest demand window</div></div>
+        <div class="kpi-card accent-y"><div class="kpi-label">Cost This Month</div><div class="kpi-value">₹2,472</div><div class="kpi-delta dn">▼ 4.5% savings</div></div>
+        <div class="kpi-card accent-p"><div class="kpi-label">CO₂ Avoided</div><div class="kpi-value">18.6<span class="unit">kg</span></div><div class="kpi-delta neu">vs avg household</div></div>
+      </div>
+      <div class="panel mb20"><div class="panel-head"><div class="panel-title">30-Day Energy Trend with ML Baseline</div><div class="panel-sub">Bars = actual · Line = AI prediction</div></div><div class="panel-body"><canvas id="energyTrendChart" height="240"></canvas></div></div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div class="panel-title">Hourly Load Profile</div><div class="panel-sub">Average usage by hour of day</div></div><div class="panel-body"><canvas id="heatChart" height="200"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Peak vs Off-Peak Breakdown</div></div><div class="panel-body">
+          <div class="tariff-list">
+            <div class="tariff-row"><div class="tariff-label">Peak (14:00–18:00)</div><div class="tariff-rate red-txt">38% · ₹9/kWh</div></div><div class="sbar"><div class="sbar-fill" style="width:38%;background:var(--red)"></div></div>
+            <div class="tariff-row"><div class="tariff-label">Shoulder (08:00–14:00)</div><div class="tariff-rate yellow-txt">35% · ₹6/kWh</div></div><div class="sbar"><div class="sbar-fill" style="width:35%;background:var(--yellow)"></div></div>
+            <div class="tariff-row"><div class="tariff-label">Off-Peak (00:00–08:00)</div><div class="tariff-rate green-txt">27% · ₹5/kWh</div></div><div class="sbar"><div class="sbar-fill" style="width:27%;background:var(--green)"></div></div>
+          </div>
+          <div class="insight-box green-border"><div class="insight-title">💡 Optimization Opportunity</div><div class="insight-text">Shifting 15% peak usage to off-peak = <strong class="green-txt">₹340/month</strong> saved</div></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- PAGE: WATER -->
+    <section class="page" id="page-water">
+      <div class="sec-head"><h1 class="sec-title">Water Usage Analysis</h1><p class="sec-desc">Washing machine and air cooler water consumption tracking</p></div>
+      <div class="kpi-row">
+        <div class="kpi-card accent-g"><div class="kpi-label">Today's Usage</div><div class="kpi-value">142<span class="unit">L</span></div><div class="kpi-delta dn">▼ 8.3% vs avg</div></div>
+        <div class="kpi-card"><div class="kpi-label">This Month</div><div class="kpi-value">3,840<span class="unit">L</span></div><div class="kpi-delta dn">▼ 5.2% vs last</div></div>
+        <div class="kpi-card accent-y"><div class="kpi-label">Per Wash Cycle</div><div class="kpi-value">82<span class="unit">L</span></div><div class="kpi-delta neu">Standard · 60°C</div></div>
+        <div class="kpi-card accent-p"><div class="kpi-label">Cooler Evap.</div><div class="kpi-value">3.2<span class="unit">L/hr</span></div><div class="kpi-delta neu">34°C ambient</div></div>
+      </div>
+      <div class="grid-65">
+        <div class="panel"><div class="panel-head"><div class="panel-title">30-Day Water Consumption</div><div class="panel-sub">Litres per day — washer + cooler stacked</div></div><div class="panel-body"><canvas id="waterChart" height="230"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Source Breakdown</div></div><div class="panel-body"><canvas id="waterDonut" height="180"></canvas>
+          <div class="water-breakdown">
+            <div class="wb-row"><div class="wb-label"><span class="dl-dot yellow"></span>Washing Machine</div><span class="mono">58% · 2,227L</span></div>
+            <div class="wb-row"><div class="wb-label"><span class="dl-dot green"></span>Air Cooler</div><span class="mono">42% · 1,613L</span></div>
+          </div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- PAGE: PREDICTIONS -->
+    <section class="page" id="page-predictions">
+      <div class="sec-head"><h1 class="sec-title">AI Predictions &amp; Forecasts</h1><p class="sec-desc">Neural network forecasting · Anomaly detection · Degradation projection</p></div>
+      <div class="panel mb20">
+        <div class="panel-head"><div><div class="panel-title">7-Day Energy Forecast</div><div class="panel-sub">Predicted daily kWh with 95% confidence interval</div></div><span class="ml-badge">LSTM Model · 92.4% accuracy</span></div>
+        <div class="pred-week" id="predWeek"></div>
+        <div style="padding:0 20px 20px"><canvas id="forecastChart" height="200"></canvas></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div class="panel-title">Anomaly Detection Log</div><div class="panel-sub">ML-flagged abnormal consumption events</div></div><div id="anomalyLog" class="panel-body"></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Efficiency Forecast</div><div class="panel-sub">12-month projected performance decline</div></div><div class="panel-body"><canvas id="effForecastChart" height="220"></canvas></div></div>
+      </div>
+    </section>
+
+    <!-- PAGE: BILLS -->
+    <section class="page" id="page-bills">
+      <div class="sec-head"><h1 class="sec-title">Bill Upload &amp; Analysis</h1><p class="sec-desc">Upload your monthly electricity &amp; water bills — get instant AI-powered insights</p></div>
+      <div class="grid-65">
+        <div>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" class="upload-input" id="billFile" accept=".pdf,.jpg,.jpeg,.png" onchange="Bills.handle(event)"/>
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Drop your bill here or click to browse</div>
+            <div class="upload-sub">Supports PDF, JPG, PNG · Electricity &amp; Water bills</div>
+          </div>
+          <div id="billsList" class="bills-list"></div>
+        </div>
+        <div>
+          <div class="panel mb16"><div class="panel-head"><div class="panel-title">Bill Analytics</div></div><div class="panel-body"><canvas id="billChart" height="200"></canvas></div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title">Quick Stats</div></div><div class="panel-body">
+            <div class="stat-bar-item"><div class="stat-bar-top"><span>This Month vs Last</span><span id="billCompare" class="green-txt">▼ 3.1%</span></div><div class="sbar"><div class="sbar-fill" style="width:68%;background:var(--green)"></div></div></div>
+            <div class="stat-bar-item"><div class="stat-bar-top"><span>Bills Uploaded</span><span class="accent-txt" id="billCountStat">0</span></div><div class="sbar"><div class="sbar-fill" id="billCountBar" style="width:0%;background:var(--accent)"></div></div></div>
+            <div class="stat-bar-item"><div class="stat-bar-top"><span>Avg Monthly Cost</span><span class="yellow-txt" id="billAvg">₹0</span></div><div class="sbar"><div class="sbar-fill" style="width:65%;background:var(--yellow)"></div></div></div>
+          </div></div>
+        </div>
+      </div>
+      <div class="panel" id="billInsightPanel" style="display:none">
+        <div class="panel-head"><div><div class="panel-title">🤖 AI Bill Analysis</div><div class="panel-sub">Insights generated from your uploaded bill</div></div></div>
+        <div id="billInsights" class="panel-body"></div>
+      </div>
+    </section>
+
+    <!-- PAGE: RECOMMENDATIONS -->
+    <section class="page" id="page-recommendations">
+      <div class="sec-head"><h1 class="sec-title">AI Recommendations</h1><p class="sec-desc">Smart actions ranked by savings potential — generated from your usage data</p></div>
+      <div class="kpi-row">
+        <div class="kpi-card accent-g"><div class="kpi-label">Potential Monthly Savings</div><div class="kpi-value">₹740</div><div class="kpi-delta neu">All actions combined</div></div>
+        <div class="kpi-card"><div class="kpi-label">Energy Reduction</div><div class="kpi-value">68<span class="unit">kWh</span></div><div class="kpi-delta dn">−16% monthly</div></div>
+        <div class="kpi-card accent-g"><div class="kpi-label">Water Reduction</div><div class="kpi-value">280<span class="unit">L</span></div><div class="kpi-delta dn">−7% monthly</div></div>
+        <div class="kpi-card accent-y"><div class="kpi-label">CO₂ Savings</div><div class="kpi-value">28<span class="unit">kg</span></div><div class="kpi-delta dn">Monthly est.</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Recommended Actions</div><div class="panel-sub">Click any action to mark as implemented</div></div>
+        <div id="recList"></div>
+      </div>
+    </section>
+
+    <!-- PAGE: ALERTS -->
+    <section class="page" id="page-alerts">
+      <div class="sec-head"><h1 class="sec-title">Alert Center</h1><p class="sec-desc">Early warnings, overload conditions, efficiency degradation notices</p></div>
+      <div class="kpi-row">
+        <div class="kpi-card accent-r"><div class="kpi-label">Critical</div><div class="kpi-value">1</div><div class="kpi-delta neu">Immediate action</div></div>
+        <div class="kpi-card accent-y"><div class="kpi-label">Warnings</div><div class="kpi-value">2</div><div class="kpi-delta neu">Monitor closely</div></div>
+        <div class="kpi-card"><div class="kpi-label">Informational</div><div class="kpi-value">1</div><div class="kpi-delta neu">No action needed</div></div>
+        <div class="kpi-card accent-g"><div class="kpi-label">Resolved (30D)</div><div class="kpi-value">14</div><div class="kpi-delta dn">All cleared</div></div>
+      </div>
+      <div class="panel"><div class="panel-head"><div class="panel-title">All Active Alerts</div></div><div id="alertsList"></div></div>
+    </section>
+
+    <!-- PAGE: LOGIN HISTORY -->
+    <section class="page" id="page-history">
+      <div class="sec-head"><h1 class="sec-title">Login History</h1><p class="sec-desc">Complete audit log of all account sign-ins with date, time and device info</p></div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Recent Sign-ins</div><div class="panel-sub" id="loginTotal">0 sessions</div></div>
+          <div id="loginHistoryList" style="max-height:500px;overflow-y:auto"></div>
+        </div>
+        <div>
+          <div class="panel mb16"><div class="panel-head"><div class="panel-title">Login Statistics</div></div><div class="panel-body">
+            <div class="stat-duo"><div class="stat-duo-item"><div class="stat-duo-label">Total Sessions</div><div class="stat-duo-val accent-txt" id="statTotal">0</div></div><div class="stat-duo-item"><div class="stat-duo-label">Unique Days</div><div class="stat-duo-val green-txt" id="statDays">0</div></div></div>
+            <canvas id="loginChart" height="160" style="margin-top:16px"></canvas>
+          </div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title">Registered Accounts</div></div><div id="registeredUsers"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: ENERGY SCORE -->
+    <section class="page" id="page-score">
+      <div class="sec-head"><h1 class="sec-title">Energy Score</h1><p class="sec-desc">Your household sustainability rating based on consumption patterns</p></div>
+      <div class="grid-3">
+        <div class="panel"><div class="panel-head"><div class="panel-title">Overall Score</div></div>
+          <div class="score-center"><div class="score-ring"><div class="score-inner"><div class="score-val">78</div><div class="score-sub">/100</div></div></div><div class="score-grade green-txt">Grade B+</div><div class="score-desc">Better than 64% of similar households</div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Score Breakdown</div></div><div class="panel-body" id="scoreBreakdown"></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Score History</div></div><div class="panel-body"><canvas id="scoreChart" height="220"></canvas></div></div>
+      </div>
+      <div class="panel"><div class="panel-head"><div class="panel-title">How to Improve Your Score</div></div><div class="how-grid" id="howGrid"></div></div>
+    </section>
+
+  </div><!-- /main-area -->
+</div><!-- /app-screen -->
+
+<!-- ══════ MODALS ══════ -->
+<!-- Register -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3 class="modal-title">Create Account</h3><button class="modal-close" onclick="Modal.closeRegister()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="regName" placeholder="e.g. Ravi Kumar"/></div>
+        <div class="form-group"><label class="form-label">Metre Number</label><input class="form-input" id="regMetre" placeholder="e.g. MTR-2024-003"/></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="regPassword" type="password" placeholder="Min 6 characters"/></div>
+        <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" id="regConfirm" type="password" placeholder="Re-enter password"/></div>
+        <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="regAddress" placeholder="House / Flat No."/></div>
+        <div class="form-group"><label class="form-label">City</label><input class="form-input" id="regCity" placeholder="e.g. Hyderabad"/></div>
+      </div>
+      <div class="form-error" id="regError"></div>
+      <button class="btn-primary" onclick="Auth.register()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Device Detail -->
+<div class="modal-overlay" id="deviceModal">
+  <div class="modal-box" style="width:500px;max-width:95vw">
+    <div class="modal-head"><h3 class="modal-title" id="deviceModalTitle">Device Details</h3><button class="modal-close" onclick="Modal.closeDevice()">✕</button></div>
+    <div class="modal-body" id="deviceModalBody"></div>
+  </div>
+</div>
+
+
+<script>
+/* ═══════════════════════════════════════════════════
+   SARO — Smart Appliance Resource Optimization
+   app.js  —  Complete Application Logic
+   ═══════════════════════════════════════════════════
+   Modules:
+     DB       — localStorage persistence layer
+     Auth     — login / register / session
+     UI       — navigation, clock, toast, page rendering
+     Charts   — all Chart.js instances
+     Devices  — appliance cards & device modal
+     Bills    — bill upload, analysis, rendering
+     Alerts   — alert list rendering
+     Recs     — recommendations list
+     Score    — energy score page
+   ═══════════════════════════════════════════════════ */
+
+'use strict';
+
+/* ─────────────────────────────────────────────────
+   DB  —  localStorage persistence layer
+───────────────────────────────────────────────── */
+const DB = {
+  _ns: 'saro_',
+
+  get(key) {
+    try { return JSON.parse(localStorage.getItem(this._ns + key)) || null; }
+    catch { return null; }
+  },
+  set(key, value) {
+    localStorage.setItem(this._ns + key, JSON.stringify(value));
+  },
+  remove(key) {
+    localStorage.removeItem(this._ns + key);
+  },
+
+  /* Users */
+  getUsers() {
+    return this.get('users') || [
+      { name: 'Admin User', metre: 'MTR-2024-001', password: 'admin123', address: '12, MG Road', city: 'Hyderabad' },
+      { name: 'Demo User',  metre: 'MTR-2024-002', password: 'user456',  address: '45, Banjara Hills', city: 'Hyderabad' }
+    ];
+  },
+  saveUsers(users) { this.set('users', users); },
+
+  /* Session */
+  getSession()     { return this.get('session'); },
+  setSession(user) { this.set('session', user); },
+  clearSession()   { this.remove('session'); },
+
+  /* Login history */
+  getLoginHistory() { return this.get('loginHistory') || []; },
+  addLoginRecord(metre, name) {
+    const h = this.getLoginHistory();
+    h.unshift({
+      metre, name,
+      time:   new Date().toISOString(),
+      device: 'Web Browser',
+      ip:     '192.168.1.' + Math.floor(Math.random() * 50 + 2)
+    });
+    this.set('loginHistory', h.slice(0, 200));
+  },
+
+  /* Bills */
+  getBills()       { return this.get('bills') || []; },
+  saveBills(bills) { this.set('bills', bills); }
+};
+
+
+/* ─────────────────────────────────────────────────
+   AUTH  —  login / register / session
+───────────────────────────────────────────────── */
+const Auth = {
+  currentUser: null,
+
+  init() {
+    const s = DB.getSession();
+    if (s) { this.currentUser = s; this._launchApp(s); }
+  },
+
+  login() {
+    const metre = document.getElementById('loginMetre').value.trim();
+    const pw    = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+
+    if (!metre || !pw) {
+      errEl.textContent = '❌ Please enter both metre number and password.';
+      errEl.classList.add('show');
+      return;
+    }
+    const users = DB.getUsers();
+    const user  = users.find(u => u.metre.toLowerCase() === metre.toLowerCase() && u.password === pw);
+    if (!user) {
+      errEl.textContent = '❌ Invalid metre number or password. Please try again.';
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+    this.currentUser = user;
+    DB.setSession(user);
+    DB.addLoginRecord(user.metre, user.name);
+    this._launchApp(user);
+  },
+
+  register() {
+    const name   = document.getElementById('regName').value.trim();
+    const metre  = document.getElementById('regMetre').value.trim();
+    const pw     = document.getElementById('regPassword').value;
+    const conf   = document.getElementById('regConfirm').value;
+    const addr   = document.getElementById('regAddress').value.trim();
+    const city   = document.getElementById('regCity').value.trim();
+    const errEl  = document.getElementById('regError');
+
+    if (!name || !metre || !pw || !conf) {
+      errEl.textContent = '❌ All fields are required.'; errEl.classList.add('show'); return;
+    }
+    if (pw.length < 6) {
+      errEl.textContent = '❌ Password must be at least 6 characters.'; errEl.classList.add('show'); return;
+    }
+    if (pw !== conf) {
+      errEl.textContent = '❌ Passwords do not match.'; errEl.classList.add('show'); return;
+    }
+    const users = DB.getUsers();
+    if (users.find(u => u.metre.toLowerCase() === metre.toLowerCase())) {
+      errEl.textContent = '❌ Metre number already registered.'; errEl.classList.add('show'); return;
+    }
+    users.push({ name, metre, password: pw, address: addr, city });
+    DB.saveUsers(users);
+    errEl.classList.remove('show');
+    Modal.closeRegister();
+    UI.showToast('✅ Account created! You can now sign in.', 'var(--green)');
+    document.getElementById('loginMetre').value = metre;
+  },
+
+  logout() {
+    this.currentUser = null;
+    DB.clearSession();
+    document.getElementById('app-screen').classList.remove('active');
+    document.getElementById('login-screen').classList.add('active');
+    document.getElementById('loginMetre').value    = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').classList.remove('show');
+    UI.showToast('👋 Signed out successfully.', 'var(--accent)');
+  },
+
+  _launchApp(user) {
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('app-screen').classList.add('active');
+    document.getElementById('sbAvatar').textContent = user.name.charAt(0).toUpperCase();
+    document.getElementById('sbName').textContent   = user.name;
+    document.getElementById('sbMetre').textContent  = user.metre;
+    document.getElementById('dash-welcome').textContent =
+      `Welcome back, ${user.name} — monitoring account ${user.metre}`;
+    Bills.updateBadge();
+    setTimeout(() => UI.navigate('dashboard', document.querySelector('[data-page=dashboard]')), 80);
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   MODAL  —  open / close helpers
+───────────────────────────────────────────────── */
+const Modal = {
+  openRegister()  { document.getElementById('registerModal').classList.add('open'); },
+  closeRegister() { document.getElementById('registerModal').classList.remove('open'); },
+  openDevice()    { document.getElementById('deviceModal').classList.add('open'); },
+  closeDevice()   { document.getElementById('deviceModal').classList.remove('open'); }
+};
+
+// Close modals on overlay click
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('open');
+  }
+});
+
+
+/* ─────────────────────────────────────────────────
+   UI  —  navigation, clock, toast
+───────────────────────────────────────────────── */
+const PAGE_NAMES = {
+  dashboard:       'Dashboard Overview',
+  appliances:      'Appliance Management',
+  energy:          'Energy Monitor',
+  water:           'Water Usage',
+  predictions:     'AI Predictions',
+  bills:           'Bill Upload & Analysis',
+  recommendations: 'AI Recommendations',
+  alerts:          'Alert Center',
+  history:         'Login History',
+  score:           'Energy Score'
+};
+
+const UI = {
+  _toastTimer: null,
+
+  navigate(page, btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const pg = document.getElementById('page-' + page);
+    if (pg) pg.classList.add('active');
+    document.getElementById('tb-title').textContent = PAGE_NAMES[page] || '';
+
+    // Render dynamic content
+    setTimeout(() => {
+      Charts.init(page);
+      if (page === 'history')         History.render();
+      if (page === 'bills')           Bills.render();
+      if (page === 'recommendations') Recs.render();
+      if (page === 'alerts')          AlertsPage.render();
+      if (page === 'predictions')     Predictions.renderWeek();
+      if (page === 'score')           Score.render();
+    }, 60);
+  },
+
+  startClock() {
+    const tick = () => {
+      const el = document.getElementById('clock');
+      if (!el) return;
+      const n = new Date();
+      el.textContent =
+        n.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }) +
+        ' · ' +
+        n.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    };
+    tick();
+    setInterval(tick, 1000);
+  },
+
+  showToast(msg, color = 'var(--accent)') {
+    document.querySelectorAll('.toast').forEach(t => t.remove());
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span style="color:${color};font-size:14px">${msg}</span>`;
+    document.body.appendChild(t);
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      t.classList.add('hide');
+      setTimeout(() => t.remove(), 300);
+    }, 3200);
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   CHARTS  —  all Chart.js instances
+───────────────────────────────────────────────── */
+Chart.defaults.color        = '#3d5470';
+Chart.defaults.borderColor  = 'rgba(99,179,237,0.07)';
+Chart.defaults.font.family  = "'Outfit', sans-serif";
+
+const Charts = {
+  _instances: {},
+
+  _destroy(id) {
+    if (this._instances[id]) { this._instances[id].destroy(); delete this._instances[id]; }
+  },
+
+  _ctx(id) {
+    this._destroy(id);
+    const el = document.getElementById(id);
+    return el ? el.getContext('2d') : null;
+  },
+
+  _grad(ctx, top, bot, h = 200) {
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, top); g.addColorStop(1, bot);
+    return g;
+  },
+
+  // Hour labels 00:00 → 23:00
+  _hrs: Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2,'0')}:00`),
+
+  // Today / yesterday energy data
+  _today:  [0.2,.15,.1,.1,.15,.4,.8,1.2,1.6,1.8,2.1,1.9,1.7,2.3,2.8,2.6,2.4,2.1,1.8,1.5,1.2,.9,.6,.3],
+  _yest:   [.18,.12,.08,.1,.12,.35,.75,1.1,1.4,1.6,1.9,1.7,1.5,2.0,2.4,2.2,2.1,1.9,1.6,1.3,1.0,.8,.5,.25],
+
+  init(page) {
+    switch (page) {
+      case 'dashboard':    this.dashboard();   break;
+      case 'appliances':   this.appliances();  break;
+      case 'energy':       this.energy();      break;
+      case 'water':        this.water();       break;
+      case 'predictions':  this.predictions(); break;
+      case 'bills':        this.bills();       break;
+      case 'score':        this.score();       break;
+      case 'history':      this.history();     break;
+    }
+  },
+
+  /* ── DASHBOARD ── */
+  dashboard() {
+    const c1 = this._ctx('energyChart');
+    if (!c1) return;
+    this._instances.energyChart = new Chart(c1, {
+      type: 'line',
+      data: {
+        labels: this._hrs,
+        datasets: [
+          {
+            label: 'Today', data: this._today,
+            borderColor: '#4fc3f7', borderWidth: 2, fill: true,
+            backgroundColor: this._grad(c1, 'rgba(79,195,247,0.18)', 'rgba(79,195,247,0)'),
+            tension: 0.4, pointRadius: 0
+          },
+          {
+            label: 'Yesterday', data: this._yest,
+            borderColor: 'rgba(61,84,112,0.5)', borderWidth: 1.5,
+            fill: false, tension: 0.4, pointRadius: 0, borderDash: [4,4]
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(99,179,237,0.04)' }, ticks: { maxTicksLimit: 12, font: { size: 11 } } },
+          y: { grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => v + 'kW', font: { size: 11 } } }
+        }
+      }
+    });
+
+    const c2 = this._ctx('donutChart');
+    if (!c2) return;
+    this._instances.donutChart = new Chart(c2, {
+      type: 'doughnut',
+      data: {
+        labels: ['AC', 'Refrigerator', 'Washer', 'Cooler'],
+        datasets: [{ data: [42,28,18,12], backgroundColor: ['#4fc3f7','#00e676','#ffca28','#ce93d8'], borderWidth: 0, hoverOffset: 6 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.label}: ${c.raw}%` } } }
+      }
+    });
+  },
+
+  /* ── APPLIANCES ── */
+  appliances() {
+    const c = this._ctx('degradChart');
+    if (!c) return;
+    this._instances.degradChart = new Chart(c, {
+      type: 'line',
+      data: {
+        labels: ['Now','2mo','4mo','6mo','8mo','10mo','12mo'],
+        datasets: [
+          { label: 'AC',     data: [87,85,83,80,77,74,71], borderColor: '#4fc3f7', tension: 0.3, fill: false, borderWidth: 2, pointRadius: 3 },
+          { label: 'Fridge', data: [94,93,92,91,89,87,85], borderColor: '#00e676', tension: 0.3, fill: false, borderWidth: 2, pointRadius: 3 },
+          { label: 'Washer', data: [71,69,67,64,61,58,54], borderColor: '#ffca28', tension: 0.3, fill: false, borderWidth: 2, pointRadius: 3 },
+          { label: 'Cooler', data: [89,88,87,86,85,83,82], borderColor: '#ce93d8', tension: 0.3, fill: false, borderWidth: 2, pointRadius: 3 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { grid: { color: 'rgba(99,179,237,0.04)' } },
+          y: { min: 50, max: 100, ticks: { callback: v => v + '%' }, grid: { color: 'rgba(99,179,237,0.05)' } }
+        }
+      }
+    });
+  },
+
+  /* ── ENERGY ── */
+  energy() {
+    const c3 = this._ctx('energyTrendChart');
+    if (!c3) return;
+    const d30  = Array.from({ length: 30 }, () => +((14 + Math.random() * 10).toFixed(1)));
+    const ml30 = d30.map((_, i) => +((15.5 + i * 0.08 + Math.sin(i / 5) * 0.5).toFixed(1)));
+    this._instances.energyTrendChart = new Chart(c3, {
+      type: 'bar',
+      data: {
+        labels: Array.from({ length: 30 }, (_, i) => `${i+1}`),
+        datasets: [
+          { label: 'Actual kWh', data: d30, backgroundColor: 'rgba(79,195,247,0.38)', borderColor: '#4fc3f7', borderWidth: 1, borderRadius: 3 },
+          { type: 'line', label: 'ML Baseline', data: ml30, borderColor: 'rgba(206,147,216,0.85)', borderWidth: 2, fill: false, tension: 0.4, pointRadius: 0 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
+          y: { grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => v + 'kWh' } }
+        }
+      }
+    });
+
+    const c4 = this._ctx('heatChart');
+    if (!c4) return;
+    const ha = [.15,.1,.08,.09,.12,.42,.9,1.4,1.7,1.85,2,1.8,1.65,2.1,2.6,2.4,2.2,1.9,1.7,1.4,1.1,.8,.55,.28];
+    this._instances.heatChart = new Chart(c4, {
+      type: 'bar',
+      data: {
+        labels: this._hrs,
+        datasets: [{
+          label: 'Avg kW', data: ha,
+          backgroundColor: ha.map(v => v > 2.2 ? '#ff5252' : v > 1.5 ? '#ffca28' : '#4fc3f7'),
+          borderRadius: 2, borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { maxTicksLimit: 12, font: { size: 10 } } },
+          y: { grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => v + 'kW', font: { size: 10 } } }
+        }
+      }
+    });
+  },
+
+  /* ── WATER ── */
+  water() {
+    const c5 = this._ctx('waterChart');
+    if (!c5) return;
+    const wd = Array.from({ length: 30 }, () => Math.round(100 + Math.random() * 80));
+    this._instances.waterChart = new Chart(c5, {
+      type: 'bar',
+      data: {
+        labels: Array.from({ length: 30 }, (_, i) => `${i+1}`),
+        datasets: [
+          { label: 'Washer', data: wd.map(v => Math.round(v * 0.58)), backgroundColor: 'rgba(255,202,40,0.5)',  borderRadius: 2, stack: 's' },
+          { label: 'Cooler', data: wd.map(v => Math.round(v * 0.42)), backgroundColor: 'rgba(0,230,118,0.4)',  borderRadius: 2, stack: 's' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { maxTicksLimit: 10 } },
+          y: { stacked: true, grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => v + 'L' } }
+        }
+      }
+    });
+
+    const c6 = this._ctx('waterDonut');
+    if (!c6) return;
+    this._instances.waterDonut = new Chart(c6, {
+      type: 'doughnut',
+      data: {
+        labels: ['Washer', 'Cooler'],
+        datasets: [{ data: [58, 42], backgroundColor: ['#ffca28', '#00e676'], borderWidth: 0, hoverOffset: 6 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '72%',
+        plugins: { legend: { display: false } }
+      }
+    });
+  },
+
+  /* ── PREDICTIONS ── */
+  predictions() {
+    const c7  = this._ctx('forecastChart');
+    if (!c7) return;
+    const fv  = [17.2, 15.8, 19.1, 21.4, 20.8, 24.3, 23.1];
+    this._instances.forecastChart = new Chart(c7, {
+      type: 'line',
+      data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [
+          { label: 'Forecast', data: fv, borderColor: '#ce93d8', borderWidth: 2.5, tension: 0.4, pointRadius: 5, pointBackgroundColor: '#ce93d8', fill: false },
+          { label: 'Upper CI', data: fv.map(v => v + 2.1), borderColor: 'rgba(206,147,216,0.2)', borderWidth: 1, borderDash: [4,4], pointRadius: 0, fill: '+1', backgroundColor: 'rgba(206,147,216,0.07)' },
+          { label: 'Lower CI', data: fv.map(v => v - 1.8), borderColor: 'rgba(206,147,216,0.2)', borderWidth: 1, borderDash: [4,4], pointRadius: 0, fill: false }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => v + 'kWh' } }
+        }
+      }
+    });
+
+    const c8 = this._ctx('effForecastChart');
+    if (!c8) return;
+    this._instances.effForecastChart = new Chart(c8, {
+      type: 'line',
+      data: {
+        labels: ['Now','2mo','4mo','6mo','8mo','10mo','12mo'],
+        datasets: [
+          { label: 'AC',     data: [87,84,81,78,74,70,66], borderColor: '#4fc3f7', tension: 0.4, fill: false, borderWidth: 2, pointRadius: 3 },
+          { label: 'Fridge', data: [94,93,91,89,87,85,83], borderColor: '#00e676', tension: 0.4, fill: false, borderWidth: 2, pointRadius: 3 },
+          { label: 'Washer', data: [71,68,64,60,55,50,44], borderColor: '#ff5252', tension: 0.4, fill: false, borderWidth: 2, pointRadius: 3 },
+          { label: 'Cooler', data: [89,88,87,86,85,83,82], borderColor: '#ce93d8', tension: 0.4, fill: false, borderWidth: 2, pointRadius: 3 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { size: 10 }, boxWidth: 8 } } },
+        scales: {
+          x: { grid: { color: 'rgba(99,179,237,0.04)' } },
+          y: { min: 40, max: 100, ticks: { callback: v => v + '%' }, grid: { color: 'rgba(99,179,237,0.05)' } }
+        }
+      }
+    });
+  },
+
+  /* ── BILLS ── */
+  bills() {
+    const c9 = this._ctx('billChart');
+    if (!c9) return;
+    const saved = DB.getBills();
+    const labels = saved.length
+      ? saved.slice(0, 6).reverse().map(b => b.name.substring(0, 8) + '…')
+      : ['Jan','Feb','Mar','Apr','May','Jun'];
+    const vals = saved.length
+      ? saved.slice(0, 6).reverse().map(b => b.amount)
+      : [2200, 2650, 2480, 2900, 2750, 2840];
+    this._instances.billChart = new Chart(c9, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Bill (₹)', data: vals,
+          backgroundColor: vals.map((_, i) => i === vals.length - 1 ? 'rgba(255,202,40,0.6)' : 'rgba(79,195,247,0.4)'),
+          borderColor: vals.map((_, i) => i === vals.length - 1 ? '#ffca28' : '#4fc3f7'),
+          borderWidth: 1, borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => '₹' + v } }
+        }
+      }
+    });
+  },
+
+  /* ── SCORE ── */
+  score() {
+    const c10 = this._ctx('scoreChart');
+    if (!c10) return;
+    this._instances.scoreChart = new Chart(c10, {
+      type: 'line',
+      data: {
+        labels: ['Sep','Oct','Nov','Dec','Jan','Feb'],
+        datasets: [{
+          label: 'Score', data: [62, 65, 69, 72, 75, 78],
+          borderColor: '#00e676', borderWidth: 2.5, tension: 0.4,
+          fill: true, backgroundColor: 'rgba(0,230,118,0.07)',
+          pointRadius: 5, pointBackgroundColor: '#00e676'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { min: 50, max: 100, grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { callback: v => v + '/100' } }
+        }
+      }
+    });
+  },
+
+  /* ── HISTORY ── */
+  history() {
+    const c11 = this._ctx('loginChart');
+    if (!c11) return;
+    const hist = DB.getLoginHistory();
+    const dayMap = {};
+    hist.forEach(h => {
+      const d = new Date(h.time).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+      dayMap[d] = (dayMap[d] || 0) + 1;
+    });
+    const keys = Object.keys(dayMap).slice(-7);
+    this._instances.loginChart = new Chart(c11, {
+      type: 'bar',
+      data: {
+        labels: keys.length ? keys : ['No data'],
+        datasets: [{
+          label: 'Logins', data: keys.map(k => dayMap[k]),
+          backgroundColor: 'rgba(79,195,247,0.4)', borderColor: '#4fc3f7',
+          borderWidth: 1, borderRadius: 3
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(99,179,237,0.05)' }, ticks: { stepSize: 1 } }
+        }
+      }
+    });
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   DEVICES  —  appliance cards, device modal
+───────────────────────────────────────────────── */
+const Devices = {
+  data: {
+    ac: {
+      title: '❄️ Air Conditioner — Samsung 1.5T',
+      stats: [
+        ['Brand / Model',  'Samsung 1.5T Inverter'],
+        ['Power Rating',   '1.5 kW rated'],
+        ['Current Draw',   '1.82 kW'],
+        ['Today Usage',    '7.73 kWh'],
+        ['Efficiency',     '87%'],
+        ['Star Rating',    '⭐⭐⭐⭐⭐'],
+        ['Age',            '3 years'],
+        ['CO₂ Today',      '3.24 kg'],
+        ['Last Serviced',  'Nov 2024'],
+        ['Next Service',   'May 2025'],
+        ['Status',         'Running · 24°C set'],
+        ['Anomaly',        'None detected']
+      ]
+    },
+    fridge: {
+      title: '🧊 Refrigerator — LG 260L',
+      stats: [
+        ['Brand / Model',  'LG 260L Double Door'],
+        ['Power Rating',   '0.14 kW rated'],
+        ['Current Draw',   '0.14 kW'],
+        ['Today Usage',    '3.36 kWh'],
+        ['Efficiency',     '94%'],
+        ['Star Rating',    '⭐⭐⭐⭐'],
+        ['Age',            '5 years'],
+        ['Last Serviced',  'Aug 2024'],
+        ['Next Service',   'Feb 2025 ⚠️'],
+        ['Status',         'Optimal · 3°C'],
+        ['Anomaly',        'Seal degradation suspected']
+      ]
+    },
+    washer: {
+      title: '🫧 Washing Machine — Whirlpool 7kg',
+      stats: [
+        ['Brand / Model',  'Whirlpool 7kg FWD'],
+        ['Power Rating',   '0.78 kW rated'],
+        ['Current Draw',   '1.24 kW ⚠️'],
+        ['Today Usage',    '2.34 kWh'],
+        ['Water Today',    '82 L'],
+        ['Efficiency',     '71% (degraded)'],
+        ['Star Rating',    '⭐⭐⭐⭐⭐'],
+        ['Age',            '2 years'],
+        ['Last Serviced',  'Dec 2024'],
+        ['Status',         '⚠️ Overload Detected'],
+        ['Anomaly',        '12% overcurrent — check filter/drum']
+      ]
+    },
+    cooler: {
+      title: '💨 Air Cooler — Symphony 65L',
+      stats: [
+        ['Brand / Model',  'Symphony 65L Desert'],
+        ['Power Rating',   '0.21 kW rated'],
+        ['Current Draw',   '0.21 kW'],
+        ['Today Usage',    '0.84 kWh'],
+        ['Water Evap.',    '3.2 L/hr'],
+        ['Efficiency',     '89%'],
+        ['Age',            '1 year'],
+        ['Last Serviced',  'Jan 2025'],
+        ['Status',         'Running · Speed 2'],
+        ['Anomaly',        'None detected']
+      ]
+    }
+  },
+
+  showModal(id) {
+    const d = this.data[id];
+    if (!d) return;
+    document.getElementById('deviceModalTitle').textContent = d.title;
+    document.getElementById('deviceModalBody').innerHTML =
+      d.stats.map(([k, v]) =>
+        `<div class="dstat-row"><span class="dstat-k">${k}</span><span class="dstat-v">${v}</span></div>`
+      ).join('');
+    Modal.openDevice();
+  },
+
+  toggle(name, el) {
+    const state = el.checked ? 'ON' : 'OFF';
+    UI.showToast(`${name} turned <strong>${state}</strong>`, 'var(--accent)');
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   BILLS  —  upload, render, analysis
+───────────────────────────────────────────────── */
+const Bills = {
+  handle(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const amount = Math.round(2200 + Math.random() * 1200);
+    const units  = Math.round(380  + Math.random() * 160);
+    const bill   = {
+      id:       Date.now(),
+      name:     file.name,
+      size:     (file.size / 1024).toFixed(1) + ' KB',
+      amount, units,
+      month:    new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }),
+      uploaded: new Date().toISOString()
+    };
+    const bills = DB.getBills();
+    bills.unshift(bill);
+    DB.saveBills(bills);
+    this.render();
+    this.updateBadge();
+    this.showInsight(bill);
+    UI.showToast('📄 Bill uploaded &amp; analysed successfully.', 'var(--green)');
+    e.target.value = '';
+  },
+
+  render() {
+    const bills  = DB.getBills();
+    const listEl = document.getElementById('billsList');
+    if (!listEl) return;
+
+    document.getElementById('billCountStat').textContent = bills.length;
+    document.getElementById('billCountBar').style.width  = Math.min(bills.length * 10, 100) + '%';
+    const avg = bills.length ? Math.round(bills.reduce((s, b) => s + b.amount, 0) / bills.length) : 0;
+    document.getElementById('billAvg').textContent = '₹' + avg.toLocaleString('en-IN');
+
+    if (!bills.length) {
+      listEl.innerHTML = '<p style="text-align:center;color:var(--text3);font-size:13px;padding:20px">No bills uploaded yet. Upload your first bill above.</p>';
+      return;
+    }
+
+    listEl.innerHTML = bills.map(b => `
+      <div class="bill-item">
+        <div class="bill-icon">📄</div>
+        <div style="flex:1">
+          <div class="bill-name">${_esc(b.name)}</div>
+          <div class="bill-meta">${b.month} · ${b.units} units · ${b.size}</div>
+        </div>
+        <div class="bill-actions">
+          <div class="bill-amount">₹${b.amount.toLocaleString('en-IN')}</div>
+          <button class="bill-analyse-btn" onclick="Bills.showInsight(${b.id})">Analyse</button>
+          <button class="bill-del" onclick="Bills.delete(${b.id})" title="Delete">🗑</button>
+        </div>
+      </div>
+    `).join('');
+
+    Charts.bills();
+  },
+
+  delete(id) {
+    DB.saveBills(DB.getBills().filter(b => b.id !== id));
+    this.render();
+    this.updateBadge();
+    UI.showToast('🗑 Bill deleted.', 'var(--red)');
+  },
+
+  showInsight(idOrBill) {
+    let bill;
+    if (typeof idOrBill === 'number') {
+      bill = DB.getBills().find(b => b.id === idOrBill);
+    } else {
+      bill = idOrBill;
+    }
+    if (!bill) return;
+
+    const panel  = document.getElementById('billInsightPanel');
+    const bodyEl = document.getElementById('billInsights');
+    if (!panel || !bodyEl) return;
+
+    const prev   = Math.round(bill.amount * (0.93 + Math.random() * 0.18));
+    const diff   = bill.amount - prev;
+    const pct    = Math.abs((diff / prev) * 100).toFixed(1);
+    const trend  = diff > 0 ? '▲' : '▼';
+    const tColor = diff > 0 ? 'var(--red)' : 'var(--green)';
+
+    const recs = [
+      'Switch to cold wash (30°C) — saves ~₹120/month on heating',
+      'Run appliances during off-peak hours (22:00–06:00) — saves ~₹340/month',
+      'Increase AC setpoint 22°C → 25°C — saves ~₹145/month',
+      'Service refrigerator door seals — saves ~₹80/month',
+      'Unplug standby devices — saves ~₹35/month'
+    ];
+
+    bodyEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px">
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;margin-bottom:8px">Total Bill</div>
+          <div style="font-size:28px;font-weight:800;color:var(--yellow)">₹${bill.amount.toLocaleString('en-IN')}</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;margin-bottom:8px">Units Consumed</div>
+          <div style="font-size:28px;font-weight:800;color:var(--accent)">${bill.units}<span style="font-size:14px;font-weight:400"> kWh</span></div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;margin-bottom:8px">vs Previous Month</div>
+          <div style="font-size:28px;font-weight:800;color:${tColor}">${trend} ${pct}%</div>
+        </div>
+      </div>
+      <div style="background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.13);border-radius:10px;padding:16px;margin-bottom:20px">
+        <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:8px">🤖 AI Analysis</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">
+          Your bill of <strong style="color:var(--text)">₹${bill.amount.toLocaleString('en-IN')}</strong> for ${bill.units} units is
+          <span style="color:${tColor}">${pct}% ${diff > 0 ? 'higher' : 'lower'}</span> than last month (₹${prev.toLocaleString('en-IN')}).
+          Average cost per unit: <strong style="color:var(--text)">₹${(bill.amount / bill.units).toFixed(2)}/kWh</strong>.
+          ${diff > 0
+            ? 'Consumption has increased — review usage patterns and implement the recommendations below to reduce costs.'
+            : 'Great work! Consumption has decreased. Keep following the optimization recommendations to reduce costs further.'}
+          Estimated potential savings with full optimization:
+          <strong style="color:var(--green)">₹${Math.round(bill.amount * 0.22).toLocaleString('en-IN')}/month (≈22%)</strong>.
+        </div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">💡 Personalized Recommendations</div>
+      ${recs.map((r, i) => `
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border2)">
+          <div style="width:24px;height:24px;border-radius:6px;background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--accent);flex-shrink:0;font-weight:700">${String(i+1).padStart(2,'0')}</div>
+          <div style="font-size:13px;color:var(--text2);flex:1;line-height:1.5">${r}</div>
+        </div>`).join('')}
+    `;
+
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+
+  updateBadge() {
+    const el = document.getElementById('billBadge');
+    if (!el) return;
+    const n = DB.getBills().length;
+    el.textContent = n;
+    el.style.background = n > 0 ? 'var(--green)' : 'var(--text3)';
+    el.style.color       = n > 0 ? '#000' : '#fff';
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   ALERTS PAGE  —  full alert list render
+───────────────────────────────────────────────── */
+const ALERT_DATA = [
+  {
+    type: 'crit', icon: '🔴', title: 'CRITICAL: Washing Machine Overload Risk',
+    desc:  'Current draw (1.24 kW) is 12% above rated capacity (0.78 kW). ML model detects sustained overload consistent with drum bearing strain or blocked filter. Risk of motor burnout within 48–72 hrs.',
+    time:  'Today · 14:32 · Detected by SARO ML Engine',
+    actions: [{ label: 'Run Diagnostics', cls: 'abtn-r' }, { label: 'Schedule Service', cls: 'abtn-n' }, { label: 'Dismiss', cls: 'abtn-n', dismiss: true }]
+  },
+  {
+    type: 'warn', icon: '🟡', title: 'WARNING: AC Running During Peak Tariff',
+    desc:  'AC running since 14:00 at peak rate ₹9/kWh vs ₹5/kWh off-peak. Pre-cool by 13:45 and shift to fan mode during 14–18 window. Estimated excess cost: ₹45/day.',
+    time:  'Today · 13:58',
+    actions: [{ label: 'Auto-Schedule', cls: 'abtn-r' }, { label: 'Dismiss', cls: 'abtn-n', dismiss: true }]
+  },
+  {
+    type: 'warn', icon: '🟡', title: 'WARNING: Refrigerator Seal Degradation Suspected',
+    desc:  'Compressor cycle frequency increased 18% over 7 days. Possible cold air leakage. Replace door seals (≈₹300) to prevent food spoilage and energy waste.',
+    time:  'Yesterday · 22:15',
+    actions: [{ label: 'Dismiss', cls: 'abtn-n', dismiss: true }]
+  },
+  {
+    type: 'info', icon: '🔵', title: 'INFO: January Monthly Report Ready',
+    desc:  'January 2025 energy & water summary is available. Total: 465 kWh · ₹2,790 · 3,600 L water.',
+    time:  'Feb 1 · 00:01',
+    actions: []
+  }
+];
+
+const AlertsPage = {
+  render() {
+    const el = document.getElementById('alertsList');
+    if (!el) return;
+    el.innerHTML = ALERT_DATA.map((a, idx) => `
+      <div class="alert-item ${a.type}" id="alertItem_${idx}">
+        <div class="alert-dot" style="font-size:22px">${a.icon}</div>
+        <div style="flex:1">
+          <div class="alert-title" style="font-size:14px">${a.title}</div>
+          <div class="alert-desc">${a.desc}</div>
+          <div class="alert-time">🕐 ${a.time}</div>
+          ${a.actions.length ? `<div class="alert-actions">${
+            a.actions.map(ac => `<button class="abtn ${ac.cls}" ${ac.dismiss ? `onclick="AlertsPage.dismiss(${idx})"` : ''}>${ac.label}</button>`).join('')
+          }</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  },
+
+  dismiss(idx) {
+    const el = document.getElementById('alertItem_' + idx);
+    if (el) { el.style.display = 'none'; UI.showToast('Alert dismissed.', 'var(--text3)'); }
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   RECS  —  recommendations list render
+───────────────────────────────────────────────── */
+const REC_DATA = [
+  { title: 'Shift AC to Off-Peak Hours', desc: 'Pre-cool room 13:00–14:00, raise setpoint to 26°C during peak tariff (14–18 hrs). Use timer or smart schedule. Applicable when ambient >32°C.', tags: ['e','c'], save: '₹280' },
+  { title: 'Cold Wash + Full Loads Only', desc: 'Switch from 60°C → 30°C saves 40% energy + 20 L/cycle. 38% of cycles this month were under 70% load — batch laundry to full loads.', tags: ['e','w'], save: '₹190' },
+  { title: 'Optimize AC Thermostat to 24–25°C', desc: 'Every 1°C increase in setpoint reduces AC energy by ~6%. Current average setpoint: 22°C. Enable auto sleep schedule from 23:00 → 26°C.', tags: ['e'], save: '₹145' },
+  { title: 'Service Refrigerator Door Seals', desc: 'ML pattern analysis: 18% compressor overwork detected. Seal replacement ≈₹300, payback <2 months through energy savings.', tags: ['e','c'], save: '₹80' },
+  { title: 'Schedule Washer at Night (22:00–06:00)', desc: 'Off-peak rate ₹5/kWh vs ₹9/kWh peak. Savings: ₹4–6 per cycle × 4 cycles/week. Use built-in delay start feature.', tags: ['e','c'], save: '₹45' },
+  { title: 'Enable Cooler Auto-Drain Before Shutdown', desc: 'Stagnant water wastes 1.8 L on next pump flush. Schedule cooler off 10 min before leaving home. Saves ~50 L/month.', tags: ['w'], save: '₹20' },
+  { title: 'Install Smart Power Strip for Standby Loads', desc: 'Phantom loads detected: ~0.08 kW idle from AC, washer, cooler in standby. Smart strip eliminates this — saves ~58 kWh/month.', tags: ['e','c'], save: '₹35' }
+];
+
+const tagMap = { e: ['rtag-e','Energy'], w: ['rtag-w','Water'], c: ['rtag-c','Cost'] };
+
+const Recs = {
+  render() {
+    const el = document.getElementById('recList');
+    if (!el) return;
+    el.innerHTML = REC_DATA.map((r, i) => `
+      <div class="rec-item" onclick="Recs.markDone(this)">
+        <div class="rec-num">${String(i + 1).padStart(2,'0')}</div>
+        <div class="rec-content">
+          <div class="rec-title">${r.title}</div>
+          <div class="rec-desc">${r.desc}</div>
+          <div class="rec-tags">${r.tags.map(t => `<span class="rtag ${tagMap[t][0]}">${tagMap[t][1]}</span>`).join('')}</div>
+        </div>
+        <div class="rec-save"><div class="rec-save-val">${r.save}</div><div class="rec-save-lbl">est./month</div></div>
+      </div>
+    `).join('');
+  },
+
+  markDone(el) {
+    el.classList.add('done');
+    el.style.pointerEvents = 'none';
+    UI.showToast('✅ Recommendation marked as implemented.', 'var(--green)');
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   PREDICTIONS  —  forecast week boxes & anomaly log
+───────────────────────────────────────────────── */
+const FORECAST = [
+  { day:'MON', val:17.2, color:'#4fc3f7', pct:72 },
+  { day:'TUE', val:15.8, color:'#00e676', pct:63 },
+  { day:'WED', val:19.1, color:'#4fc3f7', pct:80 },
+  { day:'THU', val:21.4, color:'#ffca28', pct:90 },
+  { day:'FRI', val:20.8, color:'#ffca28', pct:87 },
+  { day:'SAT', val:24.3, color:'#ff5252', pct:100 },
+  { day:'SUN', val:23.1, color:'#ff5252', pct:95 }
+];
+
+const ANOMALIES = [
+  { dot:'r', icon:'!', title:'Washer Overconsumption',     time:'Feb 14 · 11:24', detail:'1.24 kW vs expected 0.78 kW — Z-score: 3.2σ' },
+  { dot:'y', icon:'▲', title:'AC Unusual Runtime',         time:'Feb 12 · 15:00', detail:'11.2 hrs continuous vs 6.4 hr baseline — possible refrigerant loss' },
+  { dot:'r', icon:'!', title:'Refrigerator Temp Spike',    time:'Feb 10 · 03:18', detail:'Internal +4.2°C for 38 min — possible door left open' },
+  { dot:'g', icon:'✓', title:'Normal Behaviour Restored',  time:'Feb 8  · All devices', detail:'All metrics within expected baseline range' }
+];
+
+const dotColors = { r: 'rgba(255,82,82,0.1)', y: 'rgba(255,202,40,0.1)', g: 'rgba(0,230,118,0.1)' };
+const dotBorders = { r: 'var(--red)', y: 'var(--yellow)', g: 'var(--green)' };
+const dotTextCol = { r: 'var(--red)', y: 'var(--yellow)', g: 'var(--green)' };
+
+const Predictions = {
+  renderWeek() {
+    const el = document.getElementById('predWeek');
+    if (!el) return;
+    el.innerHTML = FORECAST.map(f => `
+      <div class="pred-d">
+        <div class="pred-dname">${f.day}</div>
+        <div class="pred-dval" style="color:${f.color}">${f.val}</div>
+        <div class="pred-dunit">kWh</div>
+        <div class="pred-bar"><div class="pred-bar-fill" style="width:${f.pct}%;background:${f.color}"></div></div>
+      </div>
+    `).join('');
+
+    const log = document.getElementById('anomalyLog');
+    if (!log) return;
+    log.innerHTML = ANOMALIES.map(a => `
+      <div style="display:flex;gap:12px;margin-bottom:16px">
+        <div style="width:22px;height:22px;border-radius:50%;background:${dotColors[a.dot]};border:2px solid ${dotBorders[a.dot]};display:flex;align-items:center;justify-content:center;font-size:9px;color:${dotTextCol[a.dot]};font-weight:700;flex-shrink:0">${a.icon}</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">${a.title}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">${a.time}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">${a.detail}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   HISTORY  —  login log + registered users table
+───────────────────────────────────────────────── */
+const History = {
+  render() {
+    const hist  = DB.getLoginHistory();
+    const listEl = document.getElementById('loginHistoryList');
+    const totEl  = document.getElementById('loginTotal');
+    const statT  = document.getElementById('statTotal');
+    const statD  = document.getElementById('statDays');
+
+    if (totEl)  totEl.textContent  = `${hist.length} total sessions recorded`;
+    if (statT)  statT.textContent  = hist.length;
+    if (statD)  statD.textContent  = new Set(hist.map(h => new Date(h.time).toDateString())).size;
+
+    if (listEl) {
+      if (!hist.length) {
+        listEl.innerHTML = '<p style="padding:20px;text-align:center;color:var(--text3);font-size:13px">No login history yet.</p>';
+      } else {
+        listEl.innerHTML = hist.map(h => {
+          const d  = new Date(h.time);
+          const ts = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) +
+                     ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          return `
+            <div class="hlog-item">
+              <div class="hlog-dot" style="background:var(--green)"></div>
+              <div style="flex:1">
+                <div class="hlog-name">${_esc(h.name)} <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${_esc(h.metre)}</span></div>
+                <div class="hlog-sub">${h.device} · IP: ${h.ip}</div>
+              </div>
+              <div class="hlog-time">${ts}</div>
+            </div>`;
+        }).join('');
+      }
+    }
+
+    // Registered accounts table
+    const regEl = document.getElementById('registeredUsers');
+    if (regEl) {
+      const users = DB.getUsers();
+      regEl.innerHTML = `
+        <table class="dtable">
+          <thead><tr><th>Name</th><th>Metre No</th><th>City</th></tr></thead>
+          <tbody>${users.map(u => `
+            <tr>
+              <td><strong>${_esc(u.name)}</strong></td>
+              <td class="mono" style="font-size:12px">${_esc(u.metre)}</td>
+              <td>${_esc(u.city || '—')}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    Charts.history();
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   SCORE  —  energy score page
+───────────────────────────────────────────────── */
+const SCORE_ITEMS = [
+  { label: 'Energy Efficiency',        val: 82, color: 'var(--green)' },
+  { label: 'Water Conservation',       val: 74, color: 'var(--accent)' },
+  { label: 'Peak Hour Avoidance',      val: 61, color: 'var(--yellow)' },
+  { label: 'Appliance Maintenance',    val: 88, color: 'var(--green)' },
+  { label: 'Recommendation Adoption', val: 55, color: 'var(--red)' }
+];
+const HOW_ITEMS = [
+  { emoji:'🎯', title:'Adopt 3 Recommendations', desc:'Implementing the top 3 AI recommendations would push your score from 78 → 89. Start with AC scheduling.', pts:'+11 points', color:'var(--green)' },
+  { emoji:'⏰', title:'Shift Peak Hour Usage', desc:'Peak avoidance score (61) is the weakest link. Scheduling washer and AC off-peak boosts this category by 22 points.', pts:'+8 points', color:'var(--yellow)' },
+  { emoji:'🔧', title:'Service Refrigerator', desc:'Overdue fridge maintenance (Feb 2025 due date) is dragging your score. Service now to maintain efficiency rating.', pts:'+5 points', color:'var(--accent)' }
+];
+
+const Score = {
+  render() {
+    const breakdown = document.getElementById('scoreBreakdown');
+    if (breakdown) {
+      breakdown.innerHTML = SCORE_ITEMS.map(s => `
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+            <span style="color:var(--text2)">${s.label}</span>
+            <span style="color:${s.color};font-family:var(--mono);font-weight:700">${s.val}/100</span>
+          </div>
+          <div class="sbar"><div class="sbar-fill" style="width:${s.val}%;background:${s.color}"></div></div>
+        </div>`).join('');
+    }
+
+    const howEl = document.getElementById('howGrid');
+    if (howEl) {
+      howEl.innerHTML = HOW_ITEMS.map(h => `
+        <div class="how-item">
+          <div class="how-emoji">${h.emoji}</div>
+          <div class="how-title">${h.title}</div>
+          <div class="how-desc">${h.desc}</div>
+          <div class="how-pts" style="color:${h.color}">${h.pts}</div>
+        </div>`).join('');
+    }
+  }
+};
+
+
+/* ─────────────────────────────────────────────────
+   UTILITY
+───────────────────────────────────────────────── */
+/** Escape HTML to prevent XSS */
+function _esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/** Toggle password visibility */
+function togglePw(id, el) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  el.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+/* Live power simulation — updates every 3.5 s */
+const LIVE_RANGES = {
+  acPow: [1.70, 2.00],
+  frPow: [0.12, 0.16],
+  waPow: [0.70, 0.85],
+  coPow: [0.18, 0.24]
+};
+setInterval(() => {
+  Object.entries(LIVE_RANGES).forEach(([id, [lo, hi]]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = (lo + Math.random() * (hi - lo)).toFixed(2) + '<small>kW</small>';
+  });
+}, 3500);
+
+/* Drag-and-drop on upload zone */
+window.addEventListener('DOMContentLoaded', () => {
+  const uz = document.getElementById('uploadZone');
+  if (uz) {
+    uz.addEventListener('dragover',  e => { e.preventDefault(); uz.classList.add('drag'); });
+    uz.addEventListener('dragleave', ()  => uz.classList.remove('drag'));
+    uz.addEventListener('drop',      e  => {
+      e.preventDefault(); uz.classList.remove('drag');
+      const f = e.dataTransfer.files[0];
+      if (f) {
+        try {
+          const dt = new DataTransfer(); dt.items.add(f);
+          document.getElementById('billFile').files = dt.files;
+        } catch { /* older browsers */ }
+        Bills.handle({ target: { files: [f], value: '' } });
+      }
+    });
+  }
+});
+
+
+/* ─────────────────────────────────────────────────
+   BOOT  —  initialise app on DOM ready
+───────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  UI.startClock();
+  Auth.init();
+});
+
+</script>
+</body>
+</html>

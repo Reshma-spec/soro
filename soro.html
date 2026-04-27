@@ -1,0 +1,165 @@
+0</span> + Math.<span class="fn">random</span>() * <span class="nm">180</span>); <span class="cm">// 380-560 kWh</span>
+    <span class="kw">const</span> month  = <span class="kw">new</span> Date().<span class="fn">toLocaleString</span>(<span class="str">'default'</span>, { month: <span class="str">'short'</span>, year: <span class="str">'numeric'</span> });
+
+    <span class="cm">// Create a bill object</span>
+    <span class="kw">const</span> b = { amount, units, month, file: file.name, date: <span class="kw">new</span> Date().toISOString() };
+    
+    <span class="kw">const</span> history = DB.<span class="fn">get</span>(<span class="str">'bills'</span>) || []; <span class="cm">// read existing bills</span>
+    history.<span class="fn">push</span>(b);                       <span class="cm">// add new bill</span>
+    DB.<span class="fn">set</span>(<span class="str">'bills'</span>, history);              <span class="cm">// save back to localStorage</span>
+
+    UI.<span class="fn">showToast</span>(<span class="str">`✅ Bill processed: ₹${amount} (${units} units)`</span>);
+    <span class="kw">this</span>.<span class="fn">renderHistory</span>();                  <span class="cm">// update table on screen</span>
+  }
+};</pre>
+      <div class="explain">
+        <div class="icon">📄</div>
+        <p><strong>Local Processing:</strong> Because there is no backend server, the file isn't actually uploaded anywhere. The code reads the filename, generates simulated usage data, and saves the record to <code class="inline">localStorage</code> so it appears in the Bill History table.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="num">9</div>
+      <div>
+        <h2>Predictions &amp; Anomaly Detection</h2>
+        <div class="purpose">How the app predicts next month's bill and flags high usage</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>The system uses statistical methods to analyze historical data, predict future trends, and detect anomalies (unusual spikes in energy usage).</p>
+<pre><span class="klass">const Analytics</span> = {
+  <span class="cm">// Predict next month's bill based on the last 3 months</span>
+  <span class="fn">predictNextBill</span>(history) {
+    <span class="kw">if</span> (history.length &lt; <span class="nm">1</span>) <span class="kw">return</span> <span class="nm">0</span>;
+    <span class="kw">const</span> recent = history.<span class="fn">slice</span>(-<span class="nm">3</span>); <span class="cm">// get up to 3 most recent bills</span>
+    <span class="kw">const</span> sum = recent.<span class="fn">reduce</span>((acc, b) => acc + b.amount, <span class="nm">0</span>);
+    <span class="kw">return</span> Math.<span class="fn">round</span>(sum / recent.length * <span class="nm">1.05</span>); <span class="cm">// average + 5% expected increase</span>
+  },
+
+  <span class="cm">// Z-Score Anomaly Detection</span>
+  <span class="fn">detectAnomaly</span>(currentUsage, historyUnits) {
+    <span class="kw">const</span> mean = historyUnits.<span class="fn">reduce</span>((a, b) => a + b, <span class="nm">0</span>) / historyUnits.length;
+    <span class="kw">const</span> variance = historyUnits.<span class="fn">reduce</span>((a, b) => a + Math.<span class="fn">pow</span>(b - mean, <span class="nm">2</span>), <span class="nm">0</span>) / historyUnits.length;
+    <span class="kw">const</span> stdDev = Math.<span class="fn">sqrt</span>(variance);
+
+    <span class="kw">const</span> zScore = (currentUsage - mean) / stdDev;
+    <span class="kw">return</span> zScore &gt; <span class="nm">2</span>; <span class="cm">// Flag as anomaly if usage is > 2 standard deviations above mean</span>
+  }
+};</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="num">10</div>
+      <div>
+        <h2>CSS Design System &amp; Theme</h2>
+        <div class="purpose">How the UI stays consistent using CSS variables</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>The entire application relies on CSS variables declared in the <code class="inline">:root</code> selector. This allows for instant theme changes and ensures colors are consistent across charts, buttons, and backgrounds.</p>
+<pre><span class="cm">/* Global Variables */</span>
+:root {
+  <span class="prop">--bg</span>: <span class="str">#0a0e17</span>;         <span class="cm">/* Main dark background */</span>
+  <span class="prop">--panel</span>: <span class="str">#121826</span>;      <span class="cm">/* Card background */</span>
+  <span class="prop">--primary</span>: <span class="str">#4fc3f7</span>;    <span class="cm">/* SARO blue accent */</span>
+  <span class="prop">--text</span>: <span class="str">#e2e8f0</span>;       <span class="cm">/* Light gray text */</span>
+  <span class="prop">--success</span>: <span class="str">#00e676</span>;    <span class="cm">/* Green for ON states */</span>
+}
+
+<span class="cm">/* Responsive Grid Layout */</span>
+<span class="klass">.dashboard-grid</span> {
+  <span class="kw">display</span>: grid;
+  <span class="kw">grid-template-columns</span>: <span class="fn">repeat</span>(auto-fit, <span class="fn">minmax</span>(300px, 1fr));
+  <span class="kw">gap</span>: 20px;
+}</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="num">11</div>
+      <div>
+        <h2>Application Logic Flow</h2>
+        <div class="purpose">How the different JavaScript objects interact</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="flow">
+        <div class="flow-box">User Visits Page</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Auth.init()</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Check localStorage</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Show Login OR App</div>
+      </div>
+      <div class="flow">
+        <div class="flow-box">Click Nav Menu</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">UI.navigate()</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Hide/Show Panels</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Charts.init()</div>
+      </div>
+      <table style="margin-top: 16px;">
+        <tr><th>Object</th><th>Responsibility</th></tr>
+        <tr><td><code class="inline">DB</code></td><td>Reads/Writes to <code class="inline">localStorage</code> (Users, Bills, Settings).</td></tr>
+        <tr><td><code class="inline">Auth</code></td><td>Validates credentials, manages active session.</td></tr>
+        <tr><td><code class="inline">UI</code></td><td>Handles page transitions, modals, clocks, and toasts.</td></tr>
+        <tr><td><code class="inline">Charts</code></td><td>Initializes and updates Chart.js canvases.</td></tr>
+        <tr><td><code class="inline">Devices</code></td><td>Holds technical specs and toggle logic for appliances.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="num">12</div>
+      <div>
+        <h2>Faculty Q&amp;A Cheat Sheet</h2>
+        <div class="purpose">Ready-made answers to common technical questions</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="qa">
+        <div class="q">Where is the database hosted?</div>
+        <div class="a">For this prototype, we are using the browser's native <code class="inline">localStorage</code> API. It acts as a NoSQL document store, saving our users and bills as JSON arrays directly on the client.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How are you getting live sensor data?</div>
+        <div class="a">Currently, the data is simulated using a JavaScript <code class="inline">setInterval()</code> function that generates randomized wattage values within realistic constraints for each appliance every 3.5 seconds. In a production environment, this would be replaced by WebSocket or MQTT subscriptions to real smart plugs.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How does the anomaly detection work?</div>
+        <div class="a">We implemented a basic Z-score calculation. It looks at the historical mean and standard deviation of energy usage. If current usage exceeds the mean by more than 2 standard deviations, the system flags it as an anomaly.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Why use a Single Page Application (SPA)?</div>
+        <div class="a">SPAs provide a seamless, app-like experience without page reloads. By handling DOM manipulation and routing purely in JavaScript, we reduce latency and can smoothly animate dashboard transitions.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How secure is the authentication?</div>
+        <div class="a">This is a client-side prototype, so the authentication is simulated. Passwords are currently checked in plain text against the local JSON store. In a real-world deployment, we would use a backend server with hashed passwords (e.g., bcrypt) and JWT (JSON Web Tokens) for session management.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How did you generate the charts?</div>
+        <div class="a">We used Chart.js, a popular open-source HTML5 canvas-based charting library. We dynamically inject the context (labels and datasets) based on which dashboard view the user is currently looking at.</div>
+      </div>
+      <div class="qa">
+        <div class="q">What happens to the uploaded bill files?</div>
+        <div class="a">The app intercepts the file input, reads the file name, and simulates an OCR extraction by generating randomized bill data. The actual file isn't uploaded to a server since we are running serverless.</div>
+      </div>
+      <div class="qa">
+        <div class="q">What is the next scope for this project?</div>
+        <div class="a">The next phase would involve connecting real ESP32 microcontrollers with current sensors to send live MQTT data, and migrating the storage to a cloud database like Firebase or MongoDB.</div>
+      </div>
+    </div>
+  </div>
+
+</div> </body>
+</html>

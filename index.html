@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SARO — Smart Appliance Resource Optimization</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════
+   SARO — Smart Appliance Resource Optimization
+   style.css  —  Complete Stylesheet
+   ═══════════════════════════════════════════════════ */
+
+/* ── CSS CUSTOM PROPERTIES ── */
+:root {
+  --bg:      #06080f;
+  --bg2:     #0b0f1a;
+  --bg3:     #101526;
+  --card:    #0d1220;
+  --card2:   #131a2e;
+  --border:  rgba(99,179,237,0.13);
+  --border2: rgba(99,179,237,0.06);
+  --accent:  #4fc3f7;
+  --neon:    #00e5ff;
+  --green:   #00e676;
+  --yellow:  #ffca28;
+  --red:     #ff5252;
+  --orange:  #ff9800;
+  --purple:  #ce93d8;
+  --text:    #dce8f8;
+  --text2:   #7a9bbf;
+  --text3:   #3d5470;
+  --glow:    rgba(79,195,247,0.14);
+  --font:    'Outfit', sans-serif;
+  --mono:    'JetBrains Mono', monospace;
+  --radius:  12px;
+  --radius-sm: 8px;
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── GRID BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 100% 60% at 20% -10%, rgba(0,229,255,0.06)  0%, transparent 55%),
+    radial-gradient(ellipse 70%  50% at 85% 110%, rgba(0,230,118,0.04)  0%, transparent 55%),
+    repeating-linear-gradient(0deg,   transparent, transparent 60px, rgba(99,179,237,0.018) 60px, rgba(99,179,237,0.018) 61px),
+    repeating-linear-gradient(90deg,  transparent, transparent 60px, rgba(99,179,237,0.018) 60px, rgba(99,179,237,0.018) 61px);
+  pointer-events: none;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SCREENS (login / app) ── */
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ═══════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════ */
+#login-screen {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-wrap {
+  display: flex;
+  width: 900px;
+  max-width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgba(0,229,255,0.06), 0 40px 80px rgba(0,0,0,0.6);
+  animation: loginReveal 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes loginReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Left art panel */
+.login-art {
+  flex: 1;
+  background: linear-gradient(135deg, #060a14 0%, #0a1628 50%, #071220 100%);
+  padding: 52px 40px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.login-art::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 30% 110%, rgba(0,229,255,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60%  60% at 80% -20%, rgba(0,230,118,0.08) 0%, transparent 60%);
+}
+
+.circuit-bg { position: absolute; inset: 0; overflow: hidden; }
+.circuit-bg svg { width: 100%; height: 100%; opacity: 0.14; }
+
+.art-brand { position: relative; z-index: 1; }
+.brand-name {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  background: linear-gradient(135deg, #4fc3f7, #00e5ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.brand-name span {
+  background: linear-gradient(135deg, #00e676, #69f0ae);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.brand-tag { font-size: 13px; color: var(--text2); margin-top: 6px; letter-spacing: 0.5px; }
+
+.art-features { position: relative; z-index: 1; margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+.af-item { display: flex; align-items: flex-start; gap: 12px; }
+.af-icon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: rgba(79,195,247,0.1);
+  border: 1px solid rgba(79,195,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.af-text { font-size: 13px; color: var(--text2); line-height: 1.45; }
+.af-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* Right form panel */
+.login-form {
+  width: 360px;
+  flex-shrink: 0;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+}
+.lf-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.lf-sub   { font-size: 13px; color: var(--text2); margin-bottom: 28px; }
+
+/* Form elements */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  font-family: var(--mono);
+}
+.input-wrap { position: relative; }
+.inp-icon   { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; pointer-events: none; }
+.inp-suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text3); font-size: 14px; }
+.form-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 12px 40px 12px 40px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input:not(.input-wrap .form-input) { padding-left: 14px; }
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,195,247,0.12);
+}
+.form-input::placeholder { color: var(--text3); }
+
+.form-error {
+  display: none;
+  background: rgba(255,82,82,0.1);
+  border: 1px solid rgba(255,82,82,0.3);
+  color: var(--red);
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+.form-error.show { display: block; }
+
+/* Buttons */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #0288d1, #0097a7);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent); opacity: 0; transition: opacity 0.2s; }
+.btn-primary:hover::after { opacity: 1; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(2,136,209,0.4); }
+.btn-primary:active { transform: none; box-shadow: none; }
+
+.btn-outline {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--glow); border-color: var(--accent); }
+
+.btn-logout {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  background: rgba(255,82,82,0.08);
+  border: 1px solid rgba(255,82,82,0.22);
+  color: var(--red);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-logout:hover { background: rgba(255,82,82,0.15); }
+
+/* Demo box */
+.demo-box {
+  margin-top: 18px;
+  padding: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+}
+.demo-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-family: var(--mono); }
+.demo-row   { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+.demo-row span { color: var(--text2); }
+.demo-row code { color: var(--neon); font-family: var(--mono); }
+
+/* Or divider */
+.or-divider {
+  text-align: center;
+  color: var(--text3);
+  font-size: 12px;
+  margin: 16px 0;
+  position: relative;
+}
+.or-divider::before,
+.or-divider::after { content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: var(--border); }
+.or-divider::before { left: 0; }
+.or-divider::after  { right: 0; }
+
+/* ═══════════════════════════════
+   APP LAYOUT
+═══════════════════════════════ */
+#app-screen { flex-direction: row; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 256px;
+  min-height: 100vh;
+  background: rgba(8,11,20,0.96);
+  border-right: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  position: fixed; left: 0; top: 0; bottom: 0;
+  backdrop-filter: blur(16px);
+  z-index: 100;
+}
+
+.sb-brand { padding: 28px 22px 20px; border-bottom: 1px solid var(--border2); }
+.sb-brand-name {
+  font-size: 26px; font-weight: 900; letter-spacing: -1px;
+  background: linear-gradient(135deg, #4fc3f7, #00e5ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.sb-brand-name span {
+  background: linear-gradient(135deg, #00e676, #69f0ae);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.sb-brand-sub { font-size: 10px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; font-family: var(--mono); }
+
+.sb-user {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-avatar {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(79,195,247,0.3), rgba(0,229,255,0.2));
+  border: 1px solid rgba(79,195,247,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: var(--neon);
+}
+.sb-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+.sb-metre { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+.sb-nav { padding: 14px 12px; flex: 1; overflow-y: auto; }
+.nav-section { margin-bottom: 4px; }
+.nav-sec-label {
+  font-size: 9px; color: var(--text3); letter-spacing: 2px;
+  text-transform: uppercase; padding: 8px 10px 4px;
+  font-family: var(--mono);
+}
+.nav-btn {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 10px; border-radius: 10px;
+  cursor: pointer; transition: all 0.18s;
+  color: var(--text2); font-size: 13.5px; font-weight: 500;
+  margin-bottom: 2px; border: 1px solid transparent;
+  width: 100%; background: none; font-family: var(--font);
+  text-align: left;
+}
+.nav-btn:hover { background: var(--bg3); color: var(--text); }
+.nav-btn.active {
+  background: rgba(79,195,247,0.1);
+  color: var(--accent);
+  border-color: rgba(79,195,247,0.18);
+}
+.nav-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 8px; color: #fff;
+}
+.nav-badge.red   { background: var(--red); }
+.nav-badge.green { background: var(--green); color: #000; }
+
+.sb-footer { padding: 14px 16px; border-top: 1px solid var(--border2); }
+.sb-status  { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite; flex-shrink: 0;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* ── MAIN AREA ── */
+.main-area {
+  margin-left: 256px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 60px; display: flex; align-items: center;
+  padding: 0 28px; gap: 16px;
+  border-bottom: 1px solid var(--border2);
+  background: rgba(6,8,15,0.85); backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 50;
+}
+.tb-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.tb-clock { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
+.tb-alert-btn {
+  padding: 6px 14px;
+  background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3);
+  color: var(--red); border-radius: 6px; cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  transition: background 0.2s;
+}
+.tb-alert-btn:hover { background: rgba(255,82,82,0.2); }
+
+/* ── PAGES ── */
+.page { display: none; padding: 28px; animation: pageIn 0.3s ease both; }
+.page.active { display: block; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── SECTION HEADER ── */
+.sec-head  { margin-bottom: 22px; }
+.sec-title { font-size: 22px; font-weight: 800; color: var(--text); }
+.sec-desc  { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+/* ── KPI ROW ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.kpi-card {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 20px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.25s, transform 0.2s;
+}
+.kpi-card:hover { border-color: var(--border); transform: translateY(-2px); }
+.kpi-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--kc, var(--accent)), transparent);
+}
+.kpi-card.accent-g::after { --kc: var(--green); }
+.kpi-card.accent-y::after { --kc: var(--yellow); }
+.kpi-card.accent-r::after { --kc: var(--red); }
+.kpi-card.accent-p::after { --kc: var(--purple); }
+.kpi-icon {
+  position: absolute; right: 16px; top: 16px;
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--glow);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.green-icon  { background: rgba(0,230,118,0.1)  !important; }
+.yellow-icon { background: rgba(255,202,40,0.1)  !important; }
+.red-icon    { background: rgba(255,82,82,0.1)   !important; }
+.kpi-label {
+  font-size: 10px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 1.5px; font-family: var(--mono); margin-bottom: 10px;
+}
+.kpi-value { font-size: 30px; font-weight: 800; color: var(--text); line-height: 1; }
+.unit      { font-size: 13px; font-weight: 400; color: var(--text2); margin-left: 3px; }
+.kpi-delta { font-size: 11px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+.kpi-delta.up  { color: var(--red); }
+.kpi-delta.dn  { color: var(--green); }
+.kpi-delta.neu { color: var(--text3); }
+
+/* ── GRID LAYOUTS ── */
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr;         gap: 16px; margin-bottom: 20px; }
+.grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr;     gap: 16px; margin-bottom: 20px; }
+.grid-65  { display: grid; grid-template-columns: 1.6fr 1fr;       gap: 16px; margin-bottom: 20px; }
+.mb16     { margin-bottom: 16px; }
+.mb20     { margin-bottom: 20px; }
+
+/* ── PANEL ── */
+.panel { background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.panel-head {
+  padding: 16px 20px; border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.panel-sub   { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.panel-body  { padding: 20px; }
+
+/* ── LEGEND / TAGS ── */
+.legend-row { display: flex; gap: 12px; font-size: 12px; }
+.leg-blue   { color: var(--accent); }
+.leg-dim    { color: var(--text3); }
+.tag-green  { font-size: 12px; color: var(--green); }
+.ml-badge   { font-size: 12px; padding: 4px 12px; background: rgba(206,147,216,0.1); border: 1px solid rgba(206,147,216,0.2); border-radius: 6px; color: var(--purple); }
+
+/* ── DONUT LEGEND ── */
+.donut-legend  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.dl-item       { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+.dl-item strong { color: var(--text); }
+.dl-dot        { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.dl-dot.blue   { background: #4fc3f7; }
+.dl-dot.green  { background: #00e676; }
+.dl-dot.yellow { background: #ffca28; }
+.dl-dot.purple { background: #ce93d8; }
+
+/* ── APP CARDS ── */
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+.app-card {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 16px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+}
+.app-card:hover { border-color: var(--border); background: var(--card2); }
+.app-card.on   .app-dot { background: var(--green);  box-shadow: 0 0 8px var(--green); }
+.app-card.warn .app-dot { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+.app-card.off  .app-dot { background: var(--text3); }
+.app-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.app-dot  { width: 8px; height: 8px; border-radius: 50%; }
+.app-emoji { font-size: 26px; }
+.app-name       { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.app-status-txt { font-size: 11px; color: var(--text3); }
+.app-metrics    { display: flex; gap: 12px; margin-top: 10px; }
+.am     { flex: 1; }
+.am-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent); }
+.am-val small { font-size: 10px; }
+.am-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.eff-bar-wrap { margin-top: 10px; }
+.eff-row  { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.eff-track { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.eff-fill  { height: 100%; border-radius: 2px; transition: width 0.7s ease; }
+
+/* ── ALERTS ── */
+.alert-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 18px; border-left: 3px solid transparent;
+  transition: background 0.2s;
+}
+.alert-item + .alert-item { border-top: 1px solid var(--border2); }
+.alert-item:hover { background: var(--bg3); }
+.alert-item.crit { border-left-color: var(--red); }
+.alert-item.warn { border-left-color: var(--yellow); }
+.alert-item.info { border-left-color: var(--accent); }
+.alert-dot   { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.alert-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.alert-desc  { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.alert-time  { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 5px; }
+.alert-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.abtn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); border: 1px solid; transition: all 0.2s; }
+.abtn-r { background: rgba(255,82,82,0.1); border-color: rgba(255,82,82,0.3); color: var(--red); }
+.abtn-r:hover { background: rgba(255,82,82,0.2); }
+.abtn-n { background: var(--bg3); border-color: var(--border); color: var(--text2); }
+.abtn-n:hover { background: var(--card2); }
+
+/* ── DATA TABLE ── */
+.dtable { width: 100%; border-collapse: collapse; }
+.dtable th {
+  text-align: left; padding: 9px 14px;
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  letter-spacing: 1px; text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+}
+.dtable td { padding: 11px 14px; font-size: 13px; color: var(--text2); border-bottom: 1px solid var(--border2); }
+.dtable tr:last-child td { border-bottom: none; }
+.dtable tr:hover td { background: rgba(255,255,255,0.018); }
+.sub-text { color: var(--text3); font-size: 11px; }
+.mono { font-family: var(--mono); }
+
+/* ── PILLS ── */
+.pill   { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+.pill-g { background: rgba(0,230,118,0.12); color: var(--green); }
+.pill-r { background: rgba(255,82,82,0.12);  color: var(--red); }
+.pill-y { background: rgba(255,202,40,0.12); color: var(--yellow); }
+.pill-b { background: rgba(79,195,247,0.12); color: var(--accent); }
+
+/* ── TOGGLE SWITCH ── */
+.toggle { position: relative; width: 38px; height: 21px; display: inline-block; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.tslider {
+  position: absolute; inset: 0; background: var(--bg3);
+  border-radius: 11px; cursor: pointer; transition: 0.3s;
+  border: 1px solid var(--border);
+}
+.tslider::before {
+  content: ''; position: absolute;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--text3); top: 2px; left: 2px; transition: 0.3s;
+}
+input:checked + .tslider { background: rgba(79,195,247,0.2); border-color: var(--accent); }
+input:checked + .tslider::before { transform: translateX(17px); background: var(--accent); }
+
+/* ── TARIFF / SCORE BARS ── */
+.sbar      { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+.sbar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+.tariff-list  { display: flex; flex-direction: column; }
+.tariff-row   { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.tariff-label { color: var(--text2); }
+.tariff-rate  { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.insight-box  { margin-top: 18px; padding: 14px; border-radius: 10px; }
+.green-border { background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.18); }
+.insight-title { font-size: 12px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+.insight-text  { font-size: 12px; color: var(--text2); }
+.stat-bar-item   { margin-bottom: 14px; }
+.stat-bar-top    { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: var(--text2); }
+
+/* ── WATER ── */
+.water-breakdown { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.wb-row  { display: flex; justify-content: space-between; font-size: 13px; }
+.wb-label { display: flex; align-items: center; gap: 8px; }
+
+/* ── FORECAST BOXES ── */
+.pred-week { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; padding: 16px; }
+.pred-d    { background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 10px 6px; text-align: center; transition: 0.2s; }
+.pred-d:hover { border-color: var(--border); }
+.pred-dname  { font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; }
+.pred-dval   { font-size: 15px; font-weight: 800; margin: 6px 0 2px; }
+.pred-dunit  { font-size: 9px; color: var(--text3); margin-bottom: 6px; }
+.pred-bar    { height: 3px; border-radius: 2px; background: var(--bg2); overflow: hidden; }
+.pred-bar-fill { height: 100%; border-radius: 2px; }
+
+/* ── BILL UPLOAD ── */
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  padding: 40px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--bg3);
+  position: relative; overflow: hidden;
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(79,195,247,0.05); }
+.upload-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 0; }
+.upload-icon  { font-size: 40px; margin-bottom: 12px; }
+.upload-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.upload-sub   { font-size: 13px; color: var(--text2); }
+.bills-list   { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.bill-item {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 13px 16px;
+  display: flex; align-items: center; gap: 14px; transition: border-color 0.2s;
+}
+.bill-item:hover { border-color: var(--border); }
+.bill-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,202,40,0.12); border: 1px solid rgba(255,202,40,0.22);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.bill-name   { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.bill-meta   { font-size: 11px; color: var(--text3); }
+.bill-amount { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--yellow); }
+.bill-actions { display: flex; gap: 8px; align-items: center; }
+.bill-analyse-btn {
+  padding: 5px 12px; background: rgba(79,195,247,0.1);
+  border: 1px solid rgba(79,195,247,0.22); color: var(--accent);
+  font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer;
+  font-family: var(--font); transition: 0.2s;
+}
+.bill-analyse-btn:hover { background: rgba(79,195,247,0.2); }
+.bill-del {
+  background: none; border: none; color: var(--text3);
+  cursor: pointer; font-size: 17px; padding: 4px 8px;
+  transition: 0.2s; border-radius: 4px; line-height: 1;
+}
+.bill-del:hover { color: var(--red); background: rgba(255,82,82,0.1); }
+
+/* ── RECOMMENDATIONS ── */
+.rec-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 18px; border-bottom: 1px solid var(--border2);
+  transition: background 0.2s; cursor: pointer;
+}
+.rec-item:last-child { border-bottom: none; }
+.rec-item:hover { background: var(--bg3); }
+.rec-item.done { opacity: 0.45; }
+.rec-num {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(79,195,247,0.1); border: 1px solid rgba(79,195,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 700;
+}
+.rec-content { flex: 1; }
+.rec-title   { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.rec-desc    { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.rec-tags    { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.rtag        { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-family: var(--mono); }
+.rtag-e      { background: rgba(79,195,247,0.1); color: var(--accent); }
+.rtag-w      { background: rgba(0,230,118,0.1); color: var(--green); }
+.rtag-c      { background: rgba(255,202,40,0.1); color: var(--yellow); }
+.rec-save    { margin-left: auto; text-align: right; flex-shrink: 0; }
+.rec-save-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--green); }
+.rec-save-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* ── LOGIN HISTORY ── */
+.hlog-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--border2); }
+.hlog-item:last-child { border-bottom: none; }
+.hlog-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.hlog-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.hlog-sub  { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.hlog-time { font-family: var(--mono); font-size: 10px; color: var(--text3); white-space: nowrap; }
+
+.stat-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.stat-duo-item { text-align: center; }
+.stat-duo-label { font-size: 11px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; margin-bottom: 6px; }
+.stat-duo-val { font-family: var(--mono); font-size: 36px; font-weight: 700; }
+
+/* ── ENERGY SCORE ── */
+.score-center { display: flex; flex-direction: column; align-items: center; padding: 24px; }
+.score-ring {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: conic-gradient(var(--green) 0deg 281deg, var(--bg2) 281deg 360deg);
+  display: flex; align-items: center; justify-content: center;
+}
+.score-inner {
+  width: 110px; height: 110px; border-radius: 50%;
+  background: var(--card); display: flex; align-items: center; justify-content: center; flex-direction: column;
+}
+.score-num   { font-size: 32px; font-weight: 800; color: var(--green); line-height: 1; }
+.score-lbl   { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  width: 500px; max-width: 100%;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  animation: modalScale 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes modalScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+.modal-head { padding: 18px 24px; border-bottom: 1px solid var(--border2); display: flex; justify-content: space-between; align-items: center; }
+.modal-body { padding: 24px; }
+.modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; }
+.modal-close:hover { color: var(--text); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1080px) {
+  .login-wrap { width: 440px; }
+  .login-art { display: none; }
+  .login-form { width: 100%; }
+}
+@media (max-width: 900px) {
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3, .grid-65 { grid-template-columns: 1fr; }
+  .sidebar { width: 0; transform: translateX(-100%); transition: 0.3s; }
+  .main-area { margin-left: 0; }
+  .sidebar.open { width: 256px; transform: none; }
+}
+
+/* Utils */
+.flex-v   { display: flex; flex-direction: column; }
+.flex-h   { display: flex; align-items: center; }
+.flex-gap { gap: 8px; }
+.flex-sb  { justify-content: space-between; }
+.t-center { text-align: center; }
+.mt12     { margin-top: 12px; }
+.mt24     { margin-top: 24px; }
+.ptr      { cursor: pointer; }
+.hidden   { display: none !important; }
+
+/* Visual states */
+.glow-g { box-shadow: 0 0 15px rgba(0,230,118,0.15); }
+.glow-r { box-shadow: 0 0 15px rgba(255,82,82,0.15); }
+</style>
+</head>
+<body>
+
+  <div id="login-screen" class="screen active">
+    <div class="login-wrap">
+      <div class="login-art">
+        <div class="circuit-bg">
+          <svg viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 50H150V150H50V50Z" stroke="currentColor" stroke-width="0.5"/>
+            <path d="M150 100H250V300" stroke="currentColor" stroke-width="0.5"/>
+            <circle cx="250" cy="300" r="4" fill="currentColor"/>
+            <path d="M500 500V400H700" stroke="currentColor" stroke-width="0.5"/>
+            <circle cx="500" cy="500" r="4" fill="currentColor"/>
+            <path d="M100 500H300V450H450V550" stroke="currentColor" stroke-width="0.5"/>
+          </svg>
+        </div>
+        <div class="art-brand">
+          <h1 class="brand-name">SA<span>RO</span></h1>
+          <p class="brand-tag">Autonomous Resource Intelligence</p>
+        </div>
+        <div class="art-features">
+          <div class="af-item">
+            <div class="af-icon">⚡</div>
+            <div class="af-text"><strong>Real-time Grid Sync</strong>Dynamic monitoring across all smart appliances.</div>
+          </div>
+          <div class="af-item">
+            <div class="af-icon">🛡️</div>
+            <div class="af-text"><strong>Predictive Protection</strong>AI-driven fault detection & surge mitigation.</div>
+          </div>
+          <div class="af-item">
+            <div class="af-icon">📉</div>
+            <div class="af-text"><strong>Cost Optimization</strong>Save up to 32% via automated tariff switching.</div>
+          </div>
+        </div>
+      </div>
+      <div class="login-form">
+        <h2 class="lf-title">Welcome Back</h2>
+        <p class="lf-sub">Enter credentials to access SARO Cloud.</p>
+        
+        <div id="loginError" class="form-error">Invalid meter ID or access token.</div>
+        
+        <div class="form-group">
+          <label class="form-label">Meter Serial ID</label>
+          <div class="input-wrap">
+            <span class="inp-icon">🔢</span>
+            <input type="text" id="meterId" class="form-input" placeholder="e.g. SR-9942-X" value="SARO-DEMO-01">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Access Token</label>
+          <div class="input-wrap">
+            <span class="inp-icon">🔑</span>
+            <input type="password" id="accessKey" class="form-input" placeholder="••••••••" value="demo123">
+            <span class="inp-suffix" onclick="togglePass(this, 'accessKey')">👁</span>
+          </div>
+        </div>
+        
+        <button class="btn-primary mt12" onclick="handleLogin()">Authorize Access</button>
+        
+        <div class="or-divider">OR</div>
+        
+        <button class="btn-outline">Register New Node</button>
+        
+        <div class="demo-box mt24">
+          <div class="demo-label">Local Dev Credentials</div>
+          <div class="demo-row"><span>ID:</span> <code>SARO-DEMO-01</code></div>
+          <div class="demo-row"><span>Token:</span> <code>demo123</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-screen" class="screen">
+    
+    <aside class="sidebar">
+      <div class="sb-brand">
+        <div class="sb-brand-name">SA<span>RO</span></div>
+        <div class="sb-brand-sub">Resource Intelligence</div>
+      </div>
+      
+      <div class="sb-user">
+        <div class="sb-avatar">JS</div>
+        <div class="sb-info">
+          <div class="sb-name">James Sterling</div>
+          <div class="sb-metre">#SARO-DEMO-01</div>
+        </div>
+      </div>
+      
+      <nav class="sb-nav">
+        <div class="nav-section">
+          <div class="nav-sec-label">Control</div>
+          <button class="nav-btn active" onclick="showPage('overview', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Live Dashboard
+          </button>
+          <button class="nav-btn" onclick="showPage('appliances', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            Smart Appliances
+            <span class="nav-badge green">4 ON</span>
+          </button>
+        </div>
+        
+        <div class="nav-section">
+          <div class="nav-sec-label">Analytics</div>
+          <button class="nav-btn" onclick="showPage('energy', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>
+            Energy Profiling
+          </button>
+          <button class="nav-btn" onclick="showPage('water', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+            Water Resource
+          </button>
+          <button class="nav-btn" onclick="showPage('bills', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Bills & Tariffs
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-sec-label">System</div>
+          <button class="nav-btn" onclick="showPage('alerts', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            Alert Center
+            <span class="nav-badge red">1</span>
+          </button>
+          <button class="nav-btn" onclick="showPage('settings', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Node Config
+          </button>
+        </div>
+      </nav>
+      
+      <div class="sb-footer">
+        <div class="sb-status">
+          <div class="status-dot"></div>
+          Secure Cloud Link Active
+        </div>
+        <button class="btn-logout" onclick="logout()">Terminate Session</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      
+      <header class="topbar">
+        <div class="tb-title">Smart Home Node — <span id="activePageName">Live Dashboard</span></div>
+        <div id="clock" class="tb-clock">MAR 26, 2024 • 14:42:01</div>
+        <button class="tb-alert-btn" onclick="showPage('alerts')">⚠️ High Load Risk</button>
+      </header>
+
+      <section id="page-overview" class="page active">
+        <div class="sec-head">
+          <h2 class="sec-title">Efficiency Overview</h2>
+          <p class="sec-desc">Live resource consumption and node health status.</p>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card accent-p">
+            <div class="kpi-icon">⚡</div>
+            <div class="kpi-label">Current Power</div>
+            <div class="kpi-value" id="acPow">2.14<small>kW</small></div>
+            <div class="kpi-delta up">▲ 4.2% <span class="sub-text">vs avg</span></div>
+          </div>
+          <div class="kpi-card accent-g">
+            <div class="kpi-icon green-icon">💧</div>
+            <div class="kpi-label">Daily Water</div>
+            <div class="kpi-value">342<small>L</small></div>
+            <div class="kpi-delta dn">▼ 12% <span class="sub-text">target hit</span></div>
+          </div>
+          <div class="kpi-card accent-y">
+            <div class="kpi-icon yellow-icon">💵</div>
+            <div class="kpi-label">Est. Monthly Bill</div>
+            <div class="kpi-value">₹4,280</div>
+            <div class="kpi-delta neu">● Projection stable</div>
+          </div>
+          <div class="kpi-card accent-r">
+            <div class="kpi-icon red-icon">🌡️</div>
+            <div class="kpi-label">Node Temp</div>
+            <div class="kpi-value">42<small>°C</small></div>
+            <div class="kpi-delta up">▲ 2° <span class="sub-text">High Load</span></div>
+          </div>
+        </div>
+
+        <div class="grid-65 mb20">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Energy Demand Forecast</div>
+                <div class="panel-sub">Hourly prediction based on historical usage</div>
+              </div>
+              <div class="legend-row">
+                <span class="leg-blue">● Actual</span>
+                <span class="leg-dim">● Forecast</span>
+              </div>
+            </div>
+            <div class="panel-body">
+              <canvas id="mainChart" style="height: 260px;"></canvas>
+            </div>
+          </div>
+          
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Appliance Breakdown</div>
+              <div class="panel-sub">Today's consumption mix</div>
+            </div>
+            <div class="panel-body">
+              <canvas id="donutChart" style="height: 180px;"></canvas>
+              <div class="donut-legend">
+                <div class="dl-item"><span class="dl-dot blue"></span> HVAC <strong>42%</strong></div>
+                <div class="dl-item"><span class="dl-dot green"></span> Kitchen <strong>18%</strong></div>
+                <div class="dl-item"><span class="dl-dot yellow"></span> Laundry <strong>15%</strong></div>
+                <div class="dl-item"><span class="dl-dot purple"></span> Others <strong>25%</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Resource Smart Insights</div>
+              <div class="tag-green">AI Engine Online</div>
+            </div>
+            <div class="panel-body">
+              <div class="rec-item">
+                <div class="rec-num">01</div>
+                <div class="rec-content">
+                  <div class="rec-title">Optimize AC Schedule</div>
+                  <div class="rec-desc">Shifting AC pre-cooling by 30 mins will save ₹450/mo.</div>
+                </div>
+                <div class="rec-save">
+                  <div class="rec-save-val">₹450</div>
+                  <div class="rec-save-lbl">Est. Save</div>
+                </div>
+              </div>
+              <div class="rec-item">
+                <div class="rec-num">02</div>
+                <div class="rec-content">
+                  <div class="rec-title">Dishwasher Peak Warning</div>
+                  <div class="rec-desc">High tariff starts in 20 mins. Suggest delaying cycle.</div>
+                </div>
+                <div class="rec-save">
+                  <div class="rec-save-val">₹12</div>
+                  <div class="rec-save-lbl">Daily Save</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Recent Activity Log</div>
+              <div class="ptr sub-text">View All</div>
+            </div>
+            <div class="panel-body" style="padding:0">
+              <div class="hlog-item">
+                <div class="hlog-dot" style="background: var(--green);"></div>
+                <div class="hlog-content">
+                  <div class="hlog-name">Dishwasher Cycle Finished</div>
+                  <div class="hlog-sub">Efficiency score: 92/100</div>
+                </div>
+                <div class="hlog-time">14:12</div>
+              </div>
+              <div class="hlog-item">
+                <div class="hlog-dot" style="background: var(--red);"></div>
+                <div class="hlog-content">
+                  <div class="hlog-name">Voltage Spike Detected</div>
+                  <div class="hlog-sub">Kitchen Hub protected</div>
+                </div>
+                <div class="hlog-time">12:45</div>
+              </div>
+              <div class="hlog-item">
+                <div class="hlog-dot" style="background: var(--accent);"></div>
+                <div class="hlog-content">
+                  <div class="hlog-name">Thermostat Adjusted</div>
+                  <div class="hlog-sub">Eco-mode auto-enabled</div>
+                </div>
+                <div class="hlog-time">11:20</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-appliances" class="page">
+        <div class="sec-head flex-h flex-sb">
+          <div>
+            <h2 class="sec-title">Connected Appliances</h2>
+            <p class="sec-desc">Individual unit control and health monitoring.</p>
+          </div>
+          <button class="btn-primary" style="width:auto; padding: 10px 20px;">+ Register Unit</button>
+        </div>
+
+        <div class="app-grid">
+          <div class="app-card on">
+            <div class="app-top">
+              <div class="app-emoji">❄️</div>
+              <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+            </div>
+            <div class="app-name">Living Room AC</div>
+            <div class="app-status-txt"><span class="app-dot"></span> Active — Cooling 23°C</div>
+            <div class="app-metrics">
+              <div class="am"><div class="am-val" id="frPow">1.82<small>kW</small></div><div class="am-lbl">Power</div></div>
+              <div class="am"><div class="am-val">88<small>%</small></div><div class="am-lbl">Health</div></div>
+            </div>
+            <div class="eff-bar-wrap">
+              <div class="eff-row"><span>Energy Efficiency</span><span>Excellent</span></div>
+              <div class="eff-track"><div class="eff-fill" style="width: 85%; background: var(--green);"></div></div>
+            </div>
+          </div>
+          <div class="app-card on">
+            <div class="app-top">
+              <div class="app-emoji">🧊</div>
+              <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+            </div>
+            <div class="app-name">Smart Fridge X</div>
+            <div class="app-status-txt"><span class="app-dot"></span> Active — Comp. Running</div>
+            <div class="app-metrics">
+              <div class="am"><div class="am-val" id="frPow">0.14<small>kW</small></div><div class="am-lbl">Power</div></div>
+              <div class="am"><div class="am-val">94<small>%</small></div><div class="am-lbl">Health</div></div>
+            </div>
+            <div class="eff-bar-wrap">
+              <div class="eff-row"><span>Energy Efficiency</span><span>Good</span></div>
+              <div class="eff-track"><div class="eff-fill" style="width: 70%; background: var(--green);"></div></div>
+            </div>
+          </div>
+          <div class="app-card off">
+            <div class="app-top">
+              <div class="app-emoji">🧺</div>
+              <label class="toggle"><input type="checkbox"><span class="tslider"></span></label>
+            </div>
+            <div class="app-name">Front Load Washer</div>
+            <div class="app-status-txt"><span class="app-dot"></span> Standby</div>
+            <div class="app-metrics">
+              <div class="am"><div class="am-val" id="waPow">0.00<small>kW</small></div><div class="am-lbl">Power</div></div>
+              <div class="am"><div class="am-val">82<small>%</small></div><div class="am-lbl">Health</div></div>
+            </div>
+            <div class="eff-bar-wrap">
+              <div class="eff-row"><span>Energy Efficiency</span><span>Average</span></div>
+              <div class="eff-track"><div class="eff-fill" style="width: 55%; background: var(--yellow);"></div></div>
+            </div>
+          </div>
+          <div class="app-card warn">
+            <div class="app-top">
+              <div class="app-emoji">🍲</div>
+              <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+            </div>
+            <div class="app-name">Electric Oven Hub</div>
+            <div class="app-status-txt"><span class="app-dot"></span> Active — Heating</div>
+            <div class="app-metrics">
+              <div class="am"><div class="am-val" id="coPow">0.22<small>kW</small></div><div class="am-lbl">Power</div></div>
+              <div class="am"><div class="am-val">64<small>%</small></div><div class="am-lbl">Health</div></div>
+            </div>
+            <div class="eff-bar-wrap">
+              <div class="eff-row"><span>Energy Efficiency</span><span>Poor</span></div>
+              <div class="eff-track"><div class="eff-fill" style="width: 40%; background: var(--red);"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-energy" class="page">
+        <div class="sec-head">
+          <h2 class="sec-title">Deep Energy Profiling</h2>
+          <p class="sec-desc">Analyze historical trends and peak performance metrics.</p>
+        </div>
+
+        <div class="grid-3 mb20">
+          <div class="panel t-center">
+            <div class="panel-body">
+              <div class="demo-label">Monthly Energy Score</div>
+              <div class="score-center">
+                <div class="score-ring">
+                  <div class="score-inner">
+                    <div class="score-num">82</div>
+                    <div class="score-lbl">Excellent</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rec-save-val">+12% <span class="sub-text" style="font-weight:400">vs last month</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Peak Usage Summary</div></div>
+            <div class="panel-body">
+              <div class="stat-bar-item">
+                <div class="stat-bar-top"><span>Morning (6am-11am)</span><span>1.2 kW/h</span></div>
+                <div class="sbar"><div class="sbar-fill" style="width: 45%; background: var(--accent);"></div></div>
+              </div>
+              <div class="stat-bar-item">
+                <div class="stat-bar-top"><span>Afternoon (11am-4pm)</span><span>2.8 kW/h</span></div>
+                <div class="sbar"><div class="sbar-fill" style="width: 85%; background: var(--orange);"></div></div>
+              </div>
+              <div class="stat-bar-item">
+                <div class="stat-bar-top"><span>Evening (4pm-10pm)</span><span>1.9 kW/h</span></div>
+                <div class="sbar"><div class="sbar-fill" style="width: 65%; background: var(--yellow);"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Standby Drain</div></div>
+            <div class="panel-body">
+              <div class="stat-duo">
+                <div class="stat-duo-item">
+                  <div class="stat-duo-label">Total Loss</div>
+                  <div class="stat-duo-val" style="color: var(--red);">0.18<small style="font-size:14px">kW</small></div>
+                </div>
+                <div class="stat-duo-item">
+                  <div class="stat-duo-label">Cost/Mo</div>
+                  <div class="stat-duo-val">₹420</div>
+                </div>
+              </div>
+              <div class="insight-box green-border mt12">
+                <div class="insight-title">💡 Quick Action</div>
+                <div class="insight-text">Turning off "Vampire Nodes" at night could improve score to 88.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Weekly Forecast Projection</div></div>
+          <div class="pred-week">
+            <div class="pred-d"><div class="pred-dname">MON</div><div class="pred-dval">12</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:60%; background:var(--accent);"></div></div></div>
+            <div class="pred-d"><div class="pred-dname">TUE</div><div class="pred-dval">14</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:70%; background:var(--accent);"></div></div></div>
+            <div class="pred-d"><div class="pred-dname">WED</div><div class="pred-dval">11</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:55%; background:var(--green);"></div></div></div>
+            <div class="pred-d"><div class="pred-dname">THU</div><div class="pred-dval">18</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:90%; background:var(--red);"></div></div></div>
+            <div class="pred-d"><div class="pred-dname">FRI</div><div class="pred-dval">13</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:65%; background:var(--accent);"></div></div></div>
+            <div class="pred-d"><div class="pred-dname">SAT</div><div class="pred-dval">22</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:100%; background:var(--red);"></div></div></div>
+            <div class="pred-d"><div class="pred-dname">SUN</div><div class="pred-dval">15</div><div class="pred-dunit">kW/h</div><div class="pred-bar"><div class="pred-bar-fill" style="width:75%; background:var(--orange);"></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-water" class="page">
+        <div class="sec-head">
+          <h2 class="sec-title">Water Resource Management</h2>
+          <p class="sec-desc">Monitoring flow rates, leakage detection, and tank levels.</p>
+        </div>
+
+        <div class="grid-3 mb20">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Main Tank Level</div></div>
+            <div class="panel-body">
+              <div class="score-center">
+                <div style="width: 100px; height: 140px; border: 3px solid var(--border); border-radius: 12px; position: relative; overflow: hidden; background: var(--bg2);">
+                   <div style="position: absolute; bottom: 0; width: 100%; height: 68%; background: linear-gradient(180deg, #4fc3f7, #0288d1); transition: 1s;"></div>
+                   <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800;">68%</div>
+                </div>
+              </div>
+              <div class="t-center mt12">
+                <div class="sub-text">Approx. 1,360 Liters remaining</div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Flow Breakdown</div></div>
+            <div class="panel-body">
+              <div class="water-breakdown">
+                <div class="wb-row"><div class="wb-label">🚿 Showers</div><strong>142 L</strong></div>
+                <div class="wb-row"><div class="wb-label">🚽 Toilets</div><strong>88 L</strong></div>
+                <div class="wb-row"><div class="wb-label">🍽️ Kitchen</div><strong>64 L</strong></div>
+                <div class="wb-row"><div class="wb-label">🌳 Outdoor</div><strong>48 L</strong></div>
+              </div>
+              <div class="insight-box" style="background: rgba(255,82,82,0.08); border: 1px dashed rgba(255,82,82,0.3); margin-top:24px;">
+                <div class="insight-title" style="color: var(--red);">💧 Leak Alert</div>
+                <div class="insight-text">Micro-flow detected in Bathroom 2 during 02:00-04:00 AM.</div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Quality Index</div></div>
+            <div class="panel-body">
+              <div class="stat-bar-item">
+                <div class="stat-bar-top"><span>TDS Level</span><span>240 ppm</span></div>
+                <div class="sbar"><div class="sbar-fill" style="width: 70%; background: var(--green);"></div></div>
+              </div>
+              <div class="stat-bar-item">
+                <div class="stat-bar-top"><span>PH Balance</span><span>7.2</span></div>
+                <div class="sbar"><div class="sbar-fill" style="width: 90%; background: var(--green);"></div></div>
+              </div>
+              <div class="stat-bar-item">
+                <div class="stat-bar-top"><span>Turbidity</span><span>Low</span></div>
+                <div class="sbar"><div class="sbar-fill" style="width: 20%; background: var(--green);"></div></div>
+              </div>
+              <div class="pill pill-g mt12" style="display:block; text-align:center;">Safe for Household Use</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-bills" class="page">
+        <div class="sec-head">
+          <h2 class="sec-title">Bills & Tariff Management</h2>
+          <p class="sec-desc">Upload utility bills for AI analysis and check current grid rates.</p>
+        </div>
+
+        <div class="grid-65">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Utility Bill Analysis</div></div>
+            <div class="panel-body">
+              <div class="upload-zone" id="uploadZone">
+                <input type="file" id="billFile" class="upload-input" accept=".pdf,image/*">
+                <div class="upload-icon">📄</div>
+                <div class="upload-title">Drop your latest bill here</div>
+                <div class="upload-sub">PDF, PNG or JPG (Max 5MB)</div>
+              </div>
+              
+              <div class="bills-list" id="billsList">
+                <div class="bill-item">
+                  <div class="bill-icon">🧾</div>
+                  <div class="bill-content">
+                    <div class="bill-name">Electricity_Feb_2024.pdf</div>
+                    <div class="bill-meta">Uploaded Mar 02 • 1.2MB</div>
+                  </div>
+                  <div class="bill-amount">₹4,820</div>
+                  <div class="bill-actions">
+                    <button class="bill-analyse-btn">Analyze</button>
+                    <button class="bill-del">×</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Grid Tariff (Live)</div></div>
+            <div class="panel-body">
+              <div class="tariff-list">
+                <div class="tariff-row"><span class="tariff-label">Off-Peak (10pm-6am)</span><span class="tariff-rate" style="color:var(--green);">₹4.20/u</span></div>
+                <div class="tariff-row"><span class="tariff-label">Standard (6am-6pm)</span><span class="tariff-rate">₹6.50/u</span></div>
+                <div class="tariff-row"><span class="tariff-label">Peak (6pm-10pm)</span><span class="tariff-rate" style="color:var(--red);">₹9.80/u</span></div>
+              </div>
+              <div class="insight-box mt24" style="background: rgba(79,195,247,0.06); border: 1px solid rgba(79,195,247,0.15);">
+                <div class="insight-title" style="color:var(--accent);">Active Strategy</div>
+                <div class="insight-text">Node is currently bypassing non-essential loads until Off-Peak hours.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-alerts" class="page">
+        <div class="sec-head">
+          <h2 class="sec-title">Alert Center</h2>
+          <p class="sec-desc">Critical notifications and system health warnings.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-body" style="padding:0">
+            <div class="alert-item crit">
+              <div class="alert-dot">🚨</div>
+              <div class="alert-content">
+                <div class="alert-title">Critical Overload Risk</div>
+                <div class="alert-desc">Current power demand (4.8kW) is nearing your node's safe limit of 5.0kW. System may trigger safety trips.</div>
+                <div class="alert-time">Today, 14:40</div>
+                <div class="alert-actions">
+                  <button class="abtn abtn-r">Kill Non-Essential Loads</button>
+                  <button class="abtn abtn-n">Dismiss</button>
+                </div>
+              </div>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-dot">⚠️</div>
+              <div class="alert-content">
+                <div class="alert-title">HVAC Efficiency Drop</div>
+                <div class="alert-desc">Living Room AC compressor is cycling more frequently than normal. Filter cleaning recommended.</div>
+                <div class="alert-time">Yesterday, 18:20</div>
+                <div class="alert-actions">
+                  <button class="abtn abtn-n">Schedule Maintenance</button>
+                </div>
+              </div>
+            </div>
+            <div class="alert-item info">
+              <div class="alert-dot">ℹ️</div>
+              <div class="alert-content">
+                <div class="alert-title">Software Update Available</div>
+                <div class="alert-desc">SARO OS v2.4.1 includes improved solar forecasting and bug fixes for smart plugs.</div>
+                <div class="alert-time">Mar 24, 09:00</div>
+                <div class="alert-actions">
+                  <button class="abtn abtn-n">Install Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-settings" class="page">
+        <div class="sec-head">
+          <h2 class="sec-title">Node Configuration</h2>
+          <p class="sec-desc">Manage system parameters, security, and hardware links.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Hardware Profile</div></div>
+            <div class="panel-body">
+              <table class="dtable">
+                <tr><td>Model</td><td class="mono">SARO-CORE-V2</td></tr>
+                <tr><td>Firmware</td><td class="mono">v2.4.0-stable</td></tr>
+                <tr><td>IP Address</td><td class="mono">192.168.1.45</td></tr>
+                <tr><td>MAC Address</td><td class="mono">00:1A:2B:3C:4D:5E</td></tr>
+                <tr><td>Uptime</td><td class="mono">14d 6h 22m</td></tr>
+              </table>
+              <button class="btn-outline mt24">Restart Node Hardware</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Optimization Policy</div></div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label class="form-label">Active Mode</label>
+                <select class="form-input" style="padding-left:14px;">
+                  <option>Maximum Savings (Aggressive)</option>
+                  <option selected>Balanced (Standard)</option>
+                  <option>Comfort Priority (Disabled)</option>
+                </select>
+              </div>
+              <div class="form-group mt12">
+                <label class="flex-h flex-sb ptr">
+                  <span class="form-label" style="margin:0">Auto-kill Standby Loads</span>
+                  <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+                </label>
+              </div>
+              <div class="form-group mt12">
+                <label class="flex-h flex-sb ptr">
+                  <span class="form-label" style="margin:0">Cloud Sync Interval (5m)</span>
+                  <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+/* ── UI NAVIGATION ── */
+function showPage(pageId, btn) {
+  // Update UI state
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('page-' + pageId).classList.add('active');
+  if (btn) btn.classList.add('active');
+  
+  // Update header title
+  const titles = {
+    overview: 'Live Dashboard',
+    appliances: 'Smart Appliances',
+    energy: 'Energy Profiling',
+    water: 'Water Resource',
+    bills: 'Bills & Tariffs',
+    alerts: 'Alert Center',
+    settings: 'Node Config'
+  };
+  document.getElementById('activePageName').textContent = titles[pageId] || 'Dashboard';
+}
+
+/* ── AUTH LOGIC ── */
+function handleLogin() {
+  const mId = document.getElementById('meterId').value;
+  const key = document.getElementById('accessKey').value;
+  const err = document.getElementById('loginError');
+
+  if (mId === 'SARO-DEMO-01' && key === 'demo123') {
+    err.classList.remove('show');
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('app-screen').classList.add('active');
+    initCharts();
+  } else {
+    err.classList.add('show');
+    err.textContent = "Access Denied: Serial or Token incorrect.";
+  }
+}
+
+function logout() {
+  if (confirm("Terminate secure session?")) {
+    location.reload();
+  }
+}
+
+function togglePass(el, id) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  el.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+/* ── CHARTS ── */
+let mainChart, donutChart;
+
+function initCharts() {
+  const ctxMain = document.getElementById('mainChart').getContext('2d');
+  const ctxDonut = document.getElementById('donutChart').getContext('2d');
+
+  // Colors
+  const accent = '#4fc3f7';
+  const accentGlow = 'rgba(79, 195, 247, 0.1)';
+
+  mainChart = new Chart(ctxMain, {
+    type: 'line',
+    data: {
+      labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+      datasets: [{
+        label: 'Actual',
+        data: [1.2, 1.5, 2.8, 2.4, 2.1, 3.2, 3.8, 2.0],
+        borderColor: accent,
+        backgroundColor: accentGlow,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: accent
+      }, {
+        label: 'Forecast',
+        data: [1.1, 1.4, 2.5, 2.3, 2.2, 3.0, 3.5, 1.8],
+        borderColor: 'rgba(122, 155, 191, 0.4)',
+        borderDash: [5, 5],
+        fill: false,
+        tension: 0.4,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { 
+          beginAtZero: true, 
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#7a9bbf', font: { size: 10 } }
+        },
+        x: { 
+          grid: { display: false },
+          ticks: { color: '#7a9bbf', font: { size: 10 } }
+        }
+      }
+    }
+  });
+
+  donutChart = new Chart(ctxDonut, {
+    type: 'doughnut',
+    data: {
+      labels: ['HVAC', 'Kitchen', 'Laundry', 'Others'],
+      datasets: [{
+        data: [42, 18, 15, 25],
+        backgroundColor: ['#4fc3f7', '#00e676', '#ffca28', '#ce93d8'],
+        borderWidth: 0,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '75%',
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+/* ── CLOCK & SIMULATION ── */
+setInterval(() => {
+  const now = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const timeStr = now.toLocaleTimeString('en-GB', { hour12: false });
+  const dateStr = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  document.getElementById('clock').innerHTML = `${dateStr} • ${timeStr}`;
+}, 1000);
+
+/* Live power simulation — updates every 3.5 s */
+const LIVE_RANGES = {
+  acPow: [1.70, 2.00],
+  frPow: [0.12, 0.16],
+  waPow: [0.70, 0.85],
+  coPow: [0.18, 0.24]
+};
+setInterval(() => {
+  Object.entries(LIVE_RANGES).forEach(([id, [lo, hi]]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = (lo + Math.random() * (hi - lo)).toFixed(2) + '<small>kW</small>';
+  });
+}, 3500);
+
+/* Drag-and-drop on upload zone */
+window.addEventListener('DOMContentLoaded', () => {
+  const uz = document.getElementById('uploadZone');
+  if (uz) {
+    uz.addEventListener('dragover',  e => { e.preventDefault(); uz.classList.add('drag'); });
+    uz.addEventListener('dragleave', ()  => uz.classList.remove('drag'));
+    uz.addEventListener('drop',      e  => {
+      e.preventDefault(); uz.classList.remove('drag');
+      const f = e.dataTransfer.files[0];
+      if (f) {
+        try {
+          const dt = new DataTransfer(); dt.items.add(f);
+          document.getElementById('billFile').files = dt.files;
+          alert("Bill '" + f.name + "' received for processing.");
+        } catch(e){}
+      }
+    });
+  }
+});
+
+</script>
+</body>
+</html>
